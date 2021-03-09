@@ -17,7 +17,7 @@ namespace xAudit.Client.Console.FW
                              .ReplicateBeforeRecreation()
                              .ReplicateOnSchemaChanges()
                              .GetReplicator();
-             replicator.StartAsync();
+            replicator.StartAsync();
         }
     }
 }

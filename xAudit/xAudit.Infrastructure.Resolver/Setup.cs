@@ -49,7 +49,7 @@ namespace xAudit.Infrastructure.Resolver
             switch (this._type)
             {
                 case Implementation.CDC:
-                    return new ReplicatorUsingCDC();
+                    return  ReplicatorUsingCDC.GetInstance(_connectionString);
                 case Implementation.Triggers:
                    throw new NotImplementedException("Replicator using Triggers have not yet implemented. Please use CDC as the processor");
                 default:

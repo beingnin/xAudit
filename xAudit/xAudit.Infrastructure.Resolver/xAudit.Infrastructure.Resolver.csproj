@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\xAudit.CDC\xAudit.CDC.csproj" />
     <ProjectReference Include="..\xAudit.Contracts\xAudit.Contracts.csproj" />
   </ItemGroup>
 

@@ -49,5 +49,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xAudit.Contracts\xAudit.Contracts.csproj">
+      <Project>{5cc9e8e3-e866-467c-8c01-c989ff83ac59}</Project>
+      <Name>xAudit.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xAudit.Infrastructure.Resolver\xAudit.Infrastructure.Resolver.csproj">
+      <Project>{a5f5adbb-691f-41fc-b2ee-adeb8660ec6e}</Project>
+      <Name>xAudit.Infrastructure.Resolver</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

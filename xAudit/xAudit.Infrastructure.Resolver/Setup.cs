@@ -14,6 +14,10 @@ namespace xAudit.Infrastructure.Resolver
         private bool _alwaysRecreateTables = false;
         private bool _replicateIfRecreating = false;
         private bool _recplicateIfSchemaChanged = false;
+        public Setup(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
 
         public Setup UseCDC()
         {

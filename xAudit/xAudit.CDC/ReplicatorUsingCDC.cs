@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using xAudit.Contracts;
 
@@ -8,15 +7,20 @@ namespace xAudit.CDC
 {
     public class ReplicatorUsingCDC : IReplicator
     {
-        private string _connectionString=null;
-        private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(()=>new ReplicatorUsingCDC());
+        private string _sourceCon = null;
+        private string _partitionCon = null;
+        private IDictionary<string, string> _tables = null;
+        private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private ReplicatorUsingCDC()
         {
             Console.WriteLine("object created");
         }
-        public static ReplicatorUsingCDC GetInstance(string connectionString)
+        public static ReplicatorUsingCDC GetInstance(IDictionary<string, string> tables, string sourceCon, string partitionCon)
         {
-             _instance.Value._connectionString = connectionString;
+            _instance.Value._sourceCon = sourceCon;
+            _instance.Value._tables = tables;
+            _instance.Value._partitionCon = partitionCon;
+
             return _instance.Value;
         }
         public void Partition(string schema, string table, string version)
@@ -48,5 +52,15 @@ namespace xAudit.CDC
         {
             throw new NotImplementedException();
         }
+
+
+        #region private-methods
+
+        private Task ExecuteInitialScripts()
+        {
+            return null;
+        }
+                            
+        #endregion
     }
 }

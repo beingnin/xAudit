@@ -1,6 +1,8 @@
 ﻿using System;
 using xAudit.Contracts;
 using xAudit.CDC;
+using System.Collections.Generic;
+
 namespace xAudit.Infrastructure.Resolver
 {
     public class Setup
@@ -10,13 +12,19 @@ namespace xAudit.Infrastructure.Resolver
             CDC, Triggers
         }
         private Implementation _type;
-        private string _connectionString = null;
+        private string _sourceConnection = null;
+        private string _partitionConnection = null;
         private bool _alwaysRecreateTables = false;
         private bool _replicateIfRecreating = false;
         private bool _recplicateIfSchemaChanged = false;
-        public Setup(string connectionString)
+        private IDictionary<string, string> _tables = null;
+        public Setup(string sourceConnection, string partitionConnection = null)
         {
-            _connectionString = connectionString;
+            _sourceConnection = sourceConnection;
+            if (string.IsNullOrWhiteSpace(partitionConnection))
+                _partitionConnection = sourceConnection;
+            else
+                _partitionConnection = partitionConnection;
         }
 
         public Setup UseCDC()
@@ -44,14 +52,19 @@ namespace xAudit.Infrastructure.Resolver
             _recplicateIfSchemaChanged = true;
             return this;
         }
+        public Setup Tables(Dictionary<string, string> tables)
+        {
+            _tables = tables;
+            return this;
+        }
         public IReplicator GetReplicator()
         {
             switch (this._type)
             {
                 case Implementation.CDC:
-                    return  ReplicatorUsingCDC.GetInstance(_connectionString);
+                    return ReplicatorUsingCDC.GetInstance(_tables, _sourceConnection, _partitionConnection);
                 case Implementation.Triggers:
-                   throw new NotImplementedException("Replicator using Triggers have not yet implemented. Please use CDC as the processor");
+                    throw new NotImplementedException("Replicator using Triggers have not yet implemented. Please use CDC as the processor");
                 default:
                     return null;
             }

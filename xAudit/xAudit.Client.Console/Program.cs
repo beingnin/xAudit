@@ -12,7 +12,7 @@ namespace xAudit.Client.Console.FW
     {
         static void Main(string[] args)
         {
-            IReplicator replicator = new Setup("")
+            IReplicator replicator = new Setup("","")
                              .UseCDC()
                              .ReplicateBeforeRecreation()
                              .ReplicateOnSchemaChanges()

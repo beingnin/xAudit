@@ -2,13 +2,23 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <NeutralLanguage>en-IN</NeutralLanguage>
-    <Authors>beingnin</Authors>
+    <NeutralLanguage></NeutralLanguage>
+    <Authors>Beingnin</Authors>
+    <PackageId>Beingnin.xAudit.CDC</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Company>Beingnin</Company>
+    <Product>Beingnin.xAudit.CDC</Product>
+    <Description>CDC based imlementation of the replicator</Description>
+    <Copyright>2021</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReleaseNotes>This is the initial release</PackageReleaseNotes>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\xAudit.Contracts\xAudit.Contracts.csproj" />
-    <ProjectReference Include="..\xAudit.Infrastructure.Driver\xAudit.Infrastructure.Driver.csproj" />
+    <PackageReference Include="Beingnin.xAudit.Contracts" Version="1.0.0" />
+    <PackageReference Include="Beingnin.xAudit.Infrastructure.Driver" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

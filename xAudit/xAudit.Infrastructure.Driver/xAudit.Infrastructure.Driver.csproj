@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Beingnin.xAudit.Infrastructure.Driver</PackageId>
+    <Authors>Beingnin</Authors>
+    <Company>Beingnin</Company>
+    <Product>Beingnin.xAudit.Infrastructure.Driver</Product>
+    <Description>Simple connector to SQL Server</Description>
+    <Copyright>2021</Copyright>
+    <PackageLicenseFile></PackageLicenseFile>
+    <PackageReleaseNotes>This is the initial release</PackageReleaseNotes>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>

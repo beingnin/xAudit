@@ -2,6 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageId>Beingnin.xAudit.Contracts</PackageId>
+    <Authors>Beingnin</Authors>
+    <Company>Beingnin</Company>
+    <Product>Beingnin.xAudit.Contracts</Product>
+    <Description>The contracts for all core functionalities. You do not require this package alone</Description>
+    <Copyright>2021</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReleaseNotes>This is the initial release</PackageReleaseNotes>
   </PropertyGroup>
 
 </Project>

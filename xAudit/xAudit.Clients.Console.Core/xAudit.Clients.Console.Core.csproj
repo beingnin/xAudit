@@ -6,8 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\xAudit.Contracts\xAudit.Contracts.csproj" />
-    <ProjectReference Include="..\xAudit.Infrastructure.Resolver\xAudit.Infrastructure.Resolver.csproj" />
+    <PackageReference Include="Beingnin.xAudit" Version="1.0.1" />
   </ItemGroup>
 
 </Project>

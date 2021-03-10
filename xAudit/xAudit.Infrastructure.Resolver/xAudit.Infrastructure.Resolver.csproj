@@ -2,11 +2,21 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageId>Beingnin.xAudit</PackageId>
+    <Authors>Beingnin</Authors>
+    <Product>Beingnin.xAudit</Product>
+    <Description>Simple tool to automate audit logging for SQL server databases- with special handling of schema changes</Description>
+    <Copyright>2021</Copyright>
+    <PackageTags>Beingnin xAudit Replicator SQL CDC</PackageTags>
+    <PackageReleaseNotes>This is the initial release</PackageReleaseNotes>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\xAudit.CDC\xAudit.CDC.csproj" />
-    <ProjectReference Include="..\xAudit.Contracts\xAudit.Contracts.csproj" />
+    <PackageReference Include="Beingnin.xAudit.CDC" Version="1.0.1" />
   </ItemGroup>
 
 </Project>

@@ -27,10 +27,10 @@ GO
 
 CREATE PROCEDURE xAudit.Insert_New_Version 
 (
-	@version varchar(20),
-	@machine varchar(100),
-	@processId int,
-	@totalTables int
+	@version VARCHAR(20),
+	@machine VARCHAR(100),
+	@processId INT,
+	@totalTables INT
 ) AS
 BEGIN
 	BEGIN TRAN
@@ -64,10 +64,10 @@ GO
 
 CREATE PROCEDURE xAudit.Enable_CDC_On_DB
 (
-	@db varchar(100)
+	@db VARCHAR(100)
 )AS
 BEGIN
-	IF NOT EXISTS (SELECT * FROM sys.databases WHERE is_cdc_enabled=1 and [name] = @db )
+	IF NOT EXISTS (SELECT 1 FROM sys.databases WHERE is_cdc_enabled=1 and [name] = @db )
 	BEGIN
 		EXEC sys.sp_cdc_enable_db
 	END
@@ -76,7 +76,7 @@ GO
 
 CREATE PROCEDURE xAudit.Enable_CDC_On_DB_Recreate
 (
-	@db varchar(100)
+	@db VARCHAR(100)
 )AS
 BEGIN
 	IF NOT EXISTS (SELECT * FROM sys.databases WHERE is_cdc_enabled=1 and [name] = @db )

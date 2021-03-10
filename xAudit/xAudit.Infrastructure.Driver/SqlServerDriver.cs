@@ -40,20 +40,21 @@ namespace xAudit.Infrastructure.Driver
                 Close();
             }
         }
-        public async Task<DataTable> GetDataTableAsync(string procedure, IDataParameter[] parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<DataTable> GetDataTableAsync(string procedure, IDataParameter[] parameters, CommandType commandType=CommandType.StoredProcedure, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
                 using (SqlCommand cmd = new SqlCommand())
                 {
                     cmd.CommandText = procedure;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddRange(parameters);
+                    cmd.CommandType = commandType;
+                   if(parameters!=null && parameters.Length>0)
+                        cmd.Parameters.AddRange(parameters);
                     cmd.Connection = _SourceConnection;
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(cmd))
                     {
-                        await OpenAsync(cancellationToken);
-                        DataTable dt = null;
+                        await OpenAsync(cancellationToken).ConfigureAwait(false);
+                        DataTable dt = new DataTable();
                         sqlDataAdapter.Fill(dt);
                         return dt;
                     }
@@ -65,7 +66,7 @@ namespace xAudit.Infrastructure.Driver
             }
         }
 
-        public async Task<int> ExecuteNonQuery(string procedure, IDataParameter[] parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> ExecuteNonQueryAsync(string procedure, IDataParameter[] parameters, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
@@ -77,6 +78,25 @@ namespace xAudit.Infrastructure.Driver
                     cmd.Connection = _SourceConnection;
                     await OpenAsync(cancellationToken);
                     return await cmd.ExecuteNonQueryAsync(cancellationToken);
+                }
+            }
+            finally
+            {
+                Close();
+            }
+        }
+        public async Task<object> ExecuteScalarAsync(string procedure, IDataParameter[] parameters, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.CommandText = procedure;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddRange(parameters);
+                    cmd.Connection = _SourceConnection;
+                    await OpenAsync(cancellationToken);
+                    return await cmd.ExecuteScalarAsync(cancellationToken);
                 }
             }
             finally

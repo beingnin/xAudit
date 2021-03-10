@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using xAudit.Contracts;
+using xAudit.Infrastructure.Driver;
 
 namespace xAudit.CDC
 {
     public class ReplicatorUsingCDC : IReplicator
     {
+        private enum WhatNext { NoUpdate,Install, Upgrade,Downgrade}
+        private const string _SCHEMA = "xAudit";
         private string _sourceCon = null;
         private string _partitionCon = null;
+        private SqlServerDriver _sqlServerDriver = null;
         private IDictionary<string, string> _tables = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
+
+        public string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
         private ReplicatorUsingCDC()
         {
             Console.WriteLine("object created");
@@ -20,6 +27,7 @@ namespace xAudit.CDC
             _instance.Value._sourceCon = sourceCon;
             _instance.Value._tables = tables;
             _instance.Value._partitionCon = partitionCon;
+            _instance.Value._sqlServerDriver = new SqlServerDriver(_instance.Value._sourceCon);
 
             return _instance.Value;
         }
@@ -38,9 +46,9 @@ namespace xAudit.CDC
             throw new NotImplementedException();
         }
 
-        public Task StartAsync()
+        public async Task StartAsync()
         {
-            throw new NotImplementedException();
+            var action = await WhatToDoNextAsync();
         }
 
         public void Stop(bool backupBeforeDisabling = true, bool cleanSource = true)
@@ -56,11 +64,32 @@ namespace xAudit.CDC
 
         #region private-methods
 
-        private Task ExecuteInitialScripts()
+        private Task ExecuteInitialScriptsAsync()
         {
             return null;
         }
-                            
+        private Task ExecuteVersionUpdateScriptsAsync()
+        {
+            return null;
+        }
+        private async Task<WhatNext> WhatToDoNextAsync()
+        {
+            string query = string.Format(@"IF 
+                                         (SELECT COUNT(1) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{0}' AND TABLE_NAME = 'Meta') > 0
+                                         SELECT top(1) 1 AS IsExists, (SELECT [Version] FROM xAudit.Meta WHERE IsCurrentVersion = 1) AS [Version]
+                                         ELSE SELECT 0 AS IsExists, NULL AS [Version]", _SCHEMA);
+            var dt = await _sqlServerDriver.GetDataTableAsync(query, null,System.Data.CommandType.Text);
+            var exists = Convert.ToBoolean(dt.Rows[0]["IsExists"]);
+            var version = Convert.ToString(dt.Rows[0]["Version"]);
+
+            if (!exists)
+                return WhatNext.Install;
+            if (string.IsNullOrWhiteSpace(version))
+                return WhatNext.Install;
+            else
+                return WhatNext.Upgrade;
+        }
+
         #endregion
     }
 }

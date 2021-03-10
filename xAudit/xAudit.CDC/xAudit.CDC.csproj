@@ -2,10 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <NeutralLanguage>en-IN</NeutralLanguage>
+    <Authors>beingnin</Authors>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\xAudit.Contracts\xAudit.Contracts.csproj" />
+    <ProjectReference Include="..\xAudit.Infrastructure.Driver\xAudit.Infrastructure.Driver.csproj" />
   </ItemGroup>
 
 </Project>

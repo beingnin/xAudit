@@ -76,7 +76,7 @@ namespace xAudit.CDC
         {
             string query = string.Format(@"IF 
                                          (SELECT COUNT(1) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{0}' AND TABLE_NAME = 'Meta') > 0
-                                         SELECT top(1) 1 AS IsExists, (SELECT [Version] FROM xAudit.Meta WHERE IsCurrentVersion = 1) AS [Version]
+                                         SELECT  1 AS IsExists, (SELECT TOP(1) [Version] FROM xAudit.Meta WHERE IsCurrentVersion = 1) AS [Version]
                                          ELSE SELECT 0 AS IsExists, NULL AS [Version]", _SCHEMA);
             var dt = await _sqlServerDriver.GetDataTableAsync(query, null,System.Data.CommandType.Text);
             var exists = Convert.ToBoolean(dt.Rows[0]["IsExists"]);

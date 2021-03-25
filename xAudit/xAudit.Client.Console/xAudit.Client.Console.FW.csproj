@@ -70,18 +70,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="xAudit.CDC, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Beingnin.xAudit.CDC.1.0.1\lib\netstandard2.0\xAudit.CDC.dll</HintPath>
-    </Reference>
-    <Reference Include="xAudit.Contracts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Beingnin.xAudit.Contracts.1.0.0\lib\netstandard2.0\xAudit.Contracts.dll</HintPath>
-    </Reference>
-    <Reference Include="xAudit.Infrastructure.Driver, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Beingnin.xAudit.Infrastructure.Driver.1.0.0\lib\netstandard2.0\xAudit.Infrastructure.Driver.dll</HintPath>
-    </Reference>
-    <Reference Include="xAudit.Infrastructure.Resolver, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Beingnin.xAudit.1.0.1\lib\netstandard2.0\xAudit.Infrastructure.Resolver.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -90,6 +78,16 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xAudit.Contracts\xAudit.Contracts.csproj">
+      <Project>{5cc9e8e3-e866-467c-8c01-c989ff83ac59}</Project>
+      <Name>xAudit.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xAudit.Infrastructure.Resolver\xAudit.Infrastructure.Resolver.csproj">
+      <Project>{a5f5adbb-691f-41fc-b2ee-adeb8660ec6e}</Project>
+      <Name>xAudit.Infrastructure.Resolver</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Data.SqlClient.SNI.2.1.1\build\net46\Microsoft.Data.SqlClient.SNI.targets" Condition="Exists('..\packages\Microsoft.Data.SqlClient.SNI.2.1.1\build\net46\Microsoft.Data.SqlClient.SNI.targets')" />

@@ -16,7 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Beingnin.xAudit.CDC" Version="1.0.1" />
+    <ProjectReference Include="..\xAudit.CDC\xAudit.CDC.csproj" />
+    <ProjectReference Include="..\xAudit.Contracts\xAudit.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

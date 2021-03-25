@@ -16,7 +16,7 @@ namespace xAudit.Infrastructure.Resolver
         private string _partitionConnection = null;
         private bool _alwaysRecreateTables = false;
         private bool _replicateIfRecreating = false;
-        private bool _recplicateIfSchemaChanged = false;
+        private bool _recplicateIfSchemaChanged = true;
         private IDictionary<string, string> _tables = null;
         public Setup(string sourceConnection, string partitionConnection = null)
         {
@@ -47,9 +47,9 @@ namespace xAudit.Infrastructure.Resolver
             _replicateIfRecreating = true;
             return this;
         }
-        public Setup ReplicateOnSchemaChanges()
+        public Setup DoNotReplicateOnSchemaChanges()
         {
-            _recplicateIfSchemaChanged = true;
+            _recplicateIfSchemaChanged = false;
             return this;
         }
         public Setup Tables(Dictionary<string, string> tables)

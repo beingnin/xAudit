@@ -17,8 +17,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Beingnin.xAudit.Contracts" Version="1.0.0" />
-    <PackageReference Include="Beingnin.xAudit.Infrastructure.Driver" Version="1.0.0" />
+    <ProjectReference Include="..\xAudit.Contracts\xAudit.Contracts.csproj" />
+    <ProjectReference Include="..\xAudit.Infrastructure.Driver\xAudit.Infrastructure.Driver.csproj" />
   </ItemGroup>
 
 </Project>

@@ -15,7 +15,6 @@ namespace xAudit.Clients.Console.Core
                @"Data Source=10.10.100.68\SQL2016;Initial Catalog=SharjahPolice_Live_Beta_New;User ID=spsauser;Password=$P$@789#")
                             .UseCDC()
                             .ReplicateBeforeRecreation()
-                            .DoNotReplicateOnSchemaChanges()
                             .GetReplicator();
             try
             {

@@ -14,19 +14,18 @@ namespace xAudit.CDC
         private string _sourceCon = null;
         private string _partitionCon = null;
         private SqlServerDriver _sqlServerDriver = null;
-        private IDictionary<string, string> _tables = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
-
+        private CDCReplicatorOptions _options = null;
         public string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
         private ReplicatorUsingCDC()
         {
             Console.WriteLine("object created");
         }
-        public static ReplicatorUsingCDC GetInstance(IDictionary<string, string> tables, string sourceCon, string partitionCon)
+        public static ReplicatorUsingCDC GetInstance( CDCReplicatorOptions options,string sourceCon, string partitionCon)
         {
             _instance.Value._sourceCon = sourceCon;
-            _instance.Value._tables = tables;
             _instance.Value._partitionCon = partitionCon;
+            _instance.Value._options = options;
             _instance.Value._sqlServerDriver = new SqlServerDriver(_instance.Value._sourceCon);
 
             return _instance.Value;

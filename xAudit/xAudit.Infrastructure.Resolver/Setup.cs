@@ -26,7 +26,10 @@ namespace xAudit.Infrastructure.Resolver
             else
                 _partitionConnection = partitionConnection;
         }
-
+        /// <summary>
+        /// Calling this method will set the internal implementation dependency to capture change data 
+        /// </summary>
+        /// <returns></returns>
         public Setup UseCDC()
         {
             _type = Implementation.CDC;
@@ -62,7 +65,14 @@ namespace xAudit.Infrastructure.Resolver
             switch (this._type)
             {
                 case Implementation.CDC:
-                    return ReplicatorUsingCDC.GetInstance(_tables, _sourceConnection, _partitionConnection);
+                    return ReplicatorUsingCDC.GetInstance(
+                        new CDCReplicatorOptions(){ 
+                            AlwaysRecreateTables = _alwaysRecreateTables, 
+                            ReplicateIfRecreating = _replicateIfRecreating,
+                            ReplicateIfSchemaChanged = _recplicateIfSchemaChanged, 
+                            Tables = _tables }
+                        , _sourceConnection
+                        , _partitionConnection);
                 case Implementation.Triggers:
                     throw new NotImplementedException("Replicator using Triggers have not yet implemented. Please use CDC as the processor");
                 default:
@@ -71,3 +81,4 @@ namespace xAudit.Infrastructure.Resolver
         }
     }
 }
++

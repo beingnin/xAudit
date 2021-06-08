@@ -1,34 +1,20 @@
 
---	Begin tran 
---	commit
---	rollback
 
 
-IF NOT EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE [SCHEMA_NAME]='xAudit')
-BEGIN
-	EXEC('CREATE SCHEMA xAudit');
-END
-GO
 
-IF NOT EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='xAudit' AND TABLE_NAME='Meta')
-BEGIN
-	
-	CREATE TABLE xAudit.Meta
-	(
-		[Version] VARCHAR(20) NOT NULL,
-		[Machine] VARCHAR(100) NOT NULL,
-		[ProcessID] INT NOT NULL,
-		[TotalTables] INT DEFAULT 0,
-		[IsCurrentVersion] BIT DEFAULT 0,
-		[CreatedDateUTC] DATETIME NOT NULL,
-	);
-END;
-GO
+
+--Procedure:          xAudit.Insert_New_Version 
+--Create Date:        2021-06-02
+--Author:             Akshaya Sakthivel
+--Description:        This procedure inserts the newer of the already existing application.
 
 CREATE PROCEDURE xAudit.Insert_New_Version 
 (
 	@version VARCHAR(20),
 	@machine VARCHAR(100),
+	@major INT,
+	@minor INT,
+	@patch INT,
 	@processId INT,
 	@totalTables INT
 ) AS
@@ -43,6 +29,9 @@ BEGIN
 			(
 				@version,
 				@machine,
+				@major,
+				@minor,
+				@patch,
 				@processId,
 				@totalTables,
 				1,
@@ -56,6 +45,10 @@ BEGIN
 END
 GO
 
+--Procedure:          xAudit.Find_Current_Version
+--Create Date:        2021-06-02
+--Author:             Akshaya Sakthivel
+--Description:        This procedure get the current version of all the installed versions.
 CREATE PROCEDURE xAudit.Find_Current_Version AS
 BEGIN
 	SELECT TOP 1 [Version] FROM xAudit.Meta WHERE [IsCurrentVersion]=1 ORDER BY [CreatedDateUTC] DESC;

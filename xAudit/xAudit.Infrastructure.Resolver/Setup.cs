@@ -14,9 +14,8 @@ namespace xAudit.Infrastructure.Resolver
         private Implementation _type;
         private string _sourceConnection = null;
         private string _partitionConnection = null;
-        private bool _alwaysRecreateTables = false;
         private bool _replicateIfRecreating = false;
-        private bool _recplicateIfSchemaChanged = true;
+        private bool _recreateIfSchemaChanged = true;
         private IDictionary<string, string> _tables = null;
         public Setup(string sourceConnection, string partitionConnection = null)
         {
@@ -40,11 +39,7 @@ namespace xAudit.Infrastructure.Resolver
             _type = Implementation.Triggers;
             return this;
         }
-        public Setup RecreateOnStart()
-        {
-            _alwaysRecreateTables = true;
-            return this;
-        }
+       
         public Setup ReplicateBeforeRecreation()
         {
             _replicateIfRecreating = true;
@@ -52,7 +47,7 @@ namespace xAudit.Infrastructure.Resolver
         }
         public Setup DoNotReplicateOnSchemaChanges()
         {
-            _recplicateIfSchemaChanged = false;
+            _recreateIfSchemaChanged = false;
             return this;
         }
         public Setup Tables(Dictionary<string, string> tables)
@@ -67,9 +62,8 @@ namespace xAudit.Infrastructure.Resolver
                 case Implementation.CDC:
                     return ReplicatorUsingCDC.GetInstance(
                         new CDCReplicatorOptions(){ 
-                            AlwaysRecreateTables = _alwaysRecreateTables, 
                             ReplicateIfRecreating = _replicateIfRecreating,
-                            ReplicateIfSchemaChanged = _recplicateIfSchemaChanged, 
+                            RecreateIfSchemaChanged = _recreateIfSchemaChanged, 
                             Tables = _tables }
                         , _sourceConnection
                         , _partitionConnection);
@@ -81,4 +75,3 @@ namespace xAudit.Infrastructure.Resolver
         }
     }
 }
-+

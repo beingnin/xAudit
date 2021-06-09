@@ -6,8 +6,8 @@ namespace xAudit.CDC
 {
     public class CDCReplicatorOptions
     {
-        public bool ReplicateIfRecreating { get; set; }
-        public bool RecreateIfSchemaChanged { get; set; }
+        public bool PartitionIfSchemaChange { get; set; }
+        public bool MergeIfSchemaChange { get; set; }
         public IDictionary<string, string> Tables { get; set; }
        
     }

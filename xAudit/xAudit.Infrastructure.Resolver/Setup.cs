@@ -14,8 +14,8 @@ namespace xAudit.Infrastructure.Resolver
         private Implementation _type;
         private string _sourceConnection = null;
         private string _partitionConnection = null;
-        private bool _replicateIfRecreating = false;
-        private bool _recreateIfSchemaChanged = true;
+        private bool _partitionIfSchemaChange = false;
+        private bool _mergeIfSchemaChange = true;
         private IDictionary<string, string> _tables = null;
         public Setup(string sourceConnection, string partitionConnection = null)
         {
@@ -42,12 +42,12 @@ namespace xAudit.Infrastructure.Resolver
        
         public Setup ReplicateBeforeRecreation()
         {
-            _replicateIfRecreating = true;
+            _partitionIfSchemaChange = true;
             return this;
         }
         public Setup DoNotReplicateOnSchemaChanges()
         {
-            _recreateIfSchemaChanged = false;
+            _mergeIfSchemaChange = false;
             return this;
         }
         public Setup Tables(Dictionary<string, string> tables)
@@ -62,8 +62,8 @@ namespace xAudit.Infrastructure.Resolver
                 case Implementation.CDC:
                     return ReplicatorUsingCDC.GetInstance(
                         new CDCReplicatorOptions(){ 
-                            ReplicateIfRecreating = _replicateIfRecreating,
-                            RecreateIfSchemaChanged = _recreateIfSchemaChanged, 
+                            PartitionIfSchemaChange = _partitionIfSchemaChange,
+                            MergeIfSchemaChange = _mergeIfSchemaChange, 
                             Tables = _tables }
                         , _sourceConnection
                         , _partitionConnection);

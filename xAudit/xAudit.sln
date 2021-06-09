@@ -11,17 +11,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-Base", "01-Base", "{C810
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02-Crosscuttings", "02-Crosscuttings", "{95E30F9E-671F-4C2F-8408-F7FC4637AC95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xAudit.Clients.Console.Core", "xAudit.Clients.Console.Core\xAudit.Clients.Console.Core.csproj", "{C776C1C2-2E6A-4DCC-85A5-34CDC62C0CF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xAudit.Clients.Console.Core", "xAudit.Clients.Console.Core\xAudit.Clients.Console.Core.csproj", "{C776C1C2-2E6A-4DCC-85A5-34CDC62C0CF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xAudit.Contracts", "xAudit.Contracts\xAudit.Contracts.csproj", "{5CC9E8E3-E866-467C-8C01-C989FF83AC59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xAudit.Contracts", "xAudit.Contracts\xAudit.Contracts.csproj", "{5CC9E8E3-E866-467C-8C01-C989FF83AC59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xAudit.CDC", "xAudit.CDC\xAudit.CDC.csproj", "{4DF5B1CF-814A-43E6-9EDB-76B3FF1D07E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xAudit.CDC", "xAudit.CDC\xAudit.CDC.csproj", "{4DF5B1CF-814A-43E6-9EDB-76B3FF1D07E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xAudit.Triggers", "xAudit.Triggers\xAudit.Triggers.csproj", "{8855A292-93FD-458E-B3C6-DAB172E4180B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xAudit.Triggers", "xAudit.Triggers\xAudit.Triggers.csproj", "{8855A292-93FD-458E-B3C6-DAB172E4180B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xAudit.Infrastructure.Resolver", "xAudit.Infrastructure.Resolver\xAudit.Infrastructure.Resolver.csproj", "{A5F5ADBB-691F-41FC-B2EE-ADEB8660EC6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xAudit.Infrastructure.Resolver", "xAudit.Infrastructure.Resolver\xAudit.Infrastructure.Resolver.csproj", "{A5F5ADBB-691F-41FC-B2EE-ADEB8660EC6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xAudit.Infrastructure.Driver", "xAudit.Infrastructure.Driver\xAudit.Infrastructure.Driver.csproj", "{E0B5FB4F-F5C1-4185-B223-67224853926C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xAudit.Infrastructure.Driver", "xAudit.Infrastructure.Driver\xAudit.Infrastructure.Driver.csproj", "{E0B5FB4F-F5C1-4185-B223-67224853926C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xAudit.Primitives", "xAudit.Primitives\xAudit.Primitives.csproj", "{0F01156E-727A-42A1-947C-9D4A3CEA81A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{E0B5FB4F-F5C1-4185-B223-67224853926C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0B5FB4F-F5C1-4185-B223-67224853926C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0B5FB4F-F5C1-4185-B223-67224853926C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F01156E-727A-42A1-947C-9D4A3CEA81A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F01156E-727A-42A1-947C-9D4A3CEA81A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F01156E-727A-42A1-947C-9D4A3CEA81A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F01156E-727A-42A1-947C-9D4A3CEA81A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -69,6 +75,7 @@ Global
 		{8855A292-93FD-458E-B3C6-DAB172E4180B} = {C8100AD4-8410-4CD8-B79B-47274B3260D3}
 		{A5F5ADBB-691F-41FC-B2EE-ADEB8660EC6E} = {95E30F9E-671F-4C2F-8408-F7FC4637AC95}
 		{E0B5FB4F-F5C1-4185-B223-67224853926C} = {95E30F9E-671F-4C2F-8408-F7FC4637AC95}
+		{0F01156E-727A-42A1-947C-9D4A3CEA81A3} = {95E30F9E-671F-4C2F-8408-F7FC4637AC95}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8F548DB6-863B-4D82-B961-EF88EED605B2}

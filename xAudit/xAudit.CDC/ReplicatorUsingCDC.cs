@@ -16,7 +16,7 @@ namespace xAudit.CDC
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public string Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public Version Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
         private ReplicatorUsingCDC()
         {
             Console.WriteLine("object created");

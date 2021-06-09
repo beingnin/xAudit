@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\xAudit.Contracts\xAudit.Contracts.csproj" />
     <ProjectReference Include="..\xAudit.Infrastructure.Driver\xAudit.Infrastructure.Driver.csproj" />
+    <ProjectReference Include="..\xAudit.Primitives\xAudit.Primitives.csproj" />
   </ItemGroup>
 
 </Project>

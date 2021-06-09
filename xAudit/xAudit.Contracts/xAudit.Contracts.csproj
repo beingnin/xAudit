@@ -14,4 +14,8 @@
     <PackageReleaseNotes>This is the initial release</PackageReleaseNotes>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\xAudit.Primitives\xAudit.Primitives.csproj" />
+  </ItemGroup>
+
 </Project>

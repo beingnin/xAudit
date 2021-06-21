@@ -7,7 +7,7 @@ namespace xAudit.Contracts
 {
     public interface IReplicator
     {
-        Version Version { get; }
+        Version CurrentVersion { get; }
         Task StartAsync();
         void Start();
         Task PartitionAsync(string schema,string table, string version);

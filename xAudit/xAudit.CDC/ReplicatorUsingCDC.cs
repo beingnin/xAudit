@@ -10,13 +10,12 @@ namespace xAudit.CDC
     public class ReplicatorUsingCDC : IReplicator
     {
         private enum WhatNext { NoUpdate,Install, Upgrade,Downgrade}
-        private const string _SCHEMA = "xAudit";
         private string _sourceCon = null;
         private string _partitionCon = null;
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public Version Version => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public Version CurrentVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();
         private ReplicatorUsingCDC()
         {
             Console.WriteLine("object created");
@@ -48,6 +47,19 @@ namespace xAudit.CDC
         public async Task StartAsync()
         {
             var action = await WhatToDoNextAsync();
+            switch (action)
+            {
+                case WhatNext.NoUpdate:
+                    break;
+                case WhatNext.Install:
+                    break;
+                case WhatNext.Upgrade:
+                    break;
+                case WhatNext.Downgrade:
+                    break;
+                default:
+                    break;
+            }
         }
 
         public void Stop(bool backupBeforeDisabling = true, bool cleanSource = true)
@@ -76,17 +88,23 @@ namespace xAudit.CDC
             string query = string.Format(@"IF 
                                          (SELECT COUNT(1) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{0}' AND TABLE_NAME = 'Meta') > 0
                                          SELECT  1 AS IsExists, (SELECT TOP(1) [Version] FROM xAudit.Meta WHERE IsCurrentVersion = 1) AS [Version]
-                                         ELSE SELECT 0 AS IsExists, NULL AS [Version]", _SCHEMA);
+                                         ELSE SELECT 0 AS IsExists, NULL AS [Version]", _options.InstanceName);
             var dt = await _sqlServerDriver.GetDataTableAsync(query, null,System.Data.CommandType.Text);
             var exists = Convert.ToBoolean(dt.Rows[0]["IsExists"]);
-            var version = Convert.ToString(dt.Rows[0]["Version"]);
+            Version version = Convert.ToString(dt.Rows[0]["Version"]);
 
             if (!exists)
                 return WhatNext.Install;
-            if (string.IsNullOrWhiteSpace(version))
+            if (version == default(Version))
                 return WhatNext.Install;
-            else
+            if (version == this.CurrentVersion)
+                return WhatNext.NoUpdate;
+            if (version < this.CurrentVersion)
                 return WhatNext.Upgrade;
+            if (version > this.CurrentVersion)
+                return WhatNext.Downgrade;
+            else
+                return WhatNext.NoUpdate;
         }
 
         #endregion

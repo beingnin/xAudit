@@ -18,6 +18,8 @@ namespace xAudit
         }
         public static implicit operator Version(string v)
         {
+            if (string.IsNullOrWhiteSpace(v))
+                return new Version();
             var items = v.Split('.');
             if (items.Length != 3)
                 throw new InvalidCastException("The provided version must include exactly three parts(major, minor & patch)");

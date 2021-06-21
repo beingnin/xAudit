@@ -13,6 +13,7 @@ namespace xAudit.Infrastructure.Resolver
         }
         private Implementation _type;
         private string _sourceConnection = null;
+        private string _instance = null;
         private string _partitionConnection = null;
         private bool _trackSchemaChanges = false;
         private bool _enablePartition = true;
@@ -40,13 +41,13 @@ namespace xAudit.Infrastructure.Resolver
             _type = Implementation.Triggers;
             return this;
         }
-       
+
         public Setup TrackSchemaChanges()
         {
             _trackSchemaChanges = true;
             return this;
         }
-        public Setup EnablePartition(bool keepVersions=false)
+        public Setup EnablePartition(bool keepVersions = false)
         {
             _enablePartition = false;
             _keepVersionsForPartitions = keepVersions;
@@ -57,17 +58,25 @@ namespace xAudit.Infrastructure.Resolver
             _tables = tables;
             return this;
         }
+        public Setup SetInstanceName(string instance)
+        {
+            _instance = instance;
+            return this;
+        }
         public IReplicator GetReplicator()
         {
             switch (this._type)
             {
                 case Implementation.CDC:
                     return ReplicatorUsingCDC.GetInstance(
-                        new CDCReplicatorOptions(){ 
+                        new CDCReplicatorOptions()
+                        {
                             TrackSchemaChanges = _trackSchemaChanges,
-                            EnablePartition = _enablePartition, 
-                            KeepVersionsForPartition=_keepVersionsForPartitions,
-                            Tables = _tables }
+                            EnablePartition = _enablePartition,
+                            KeepVersionsForPartition = _keepVersionsForPartitions,
+                            InstanceName = _instance,
+                            Tables = _tables
+                        }
                         , _sourceConnection
                         , _partitionConnection);
                 case Implementation.Triggers:

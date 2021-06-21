@@ -9,6 +9,12 @@ namespace xAudit.CDC
         public bool TrackSchemaChanges { get; set; }
         public bool EnablePartition { get; set; }
         public bool KeepVersionsForPartition { get; set; }
+        private string _instance;
+        public string InstanceName
+        {
+            get => _instance ?? "xAudit";
+            set => _instance = value;
+        }
         public IDictionary<string, string> Tables { get; set; }
        
     }

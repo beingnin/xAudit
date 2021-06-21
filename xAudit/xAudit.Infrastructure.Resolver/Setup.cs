@@ -14,8 +14,9 @@ namespace xAudit.Infrastructure.Resolver
         private Implementation _type;
         private string _sourceConnection = null;
         private string _partitionConnection = null;
-        private bool _partitionIfSchemaChange = false;
-        private bool _mergeIfSchemaChange = true;
+        private bool _trackSchemaChanges = false;
+        private bool _enablePartition = true;
+        private bool _keepVersionsForPartitions = false;
         private IDictionary<string, string> _tables = null;
         public Setup(string sourceConnection, string partitionConnection = null)
         {
@@ -40,14 +41,15 @@ namespace xAudit.Infrastructure.Resolver
             return this;
         }
        
-        public Setup ReplicateBeforeRecreation()
+        public Setup TrackSchemaChanges()
         {
-            _partitionIfSchemaChange = true;
+            _trackSchemaChanges = true;
             return this;
         }
-        public Setup DoNotReplicateOnSchemaChanges()
+        public Setup EnablePartition(bool keepVersions=false)
         {
-            _mergeIfSchemaChange = false;
+            _enablePartition = false;
+            _keepVersionsForPartitions = keepVersions;
             return this;
         }
         public Setup Tables(Dictionary<string, string> tables)
@@ -62,8 +64,9 @@ namespace xAudit.Infrastructure.Resolver
                 case Implementation.CDC:
                     return ReplicatorUsingCDC.GetInstance(
                         new CDCReplicatorOptions(){ 
-                            PartitionIfSchemaChange = _partitionIfSchemaChange,
-                            MergeIfSchemaChange = _mergeIfSchemaChange, 
+                            TrackSchemaChanges = _trackSchemaChanges,
+                            EnablePartition = _enablePartition, 
+                            KeepVersionsForPartition=_keepVersionsForPartitions,
                             Tables = _tables }
                         , _sourceConnection
                         , _partitionConnection);

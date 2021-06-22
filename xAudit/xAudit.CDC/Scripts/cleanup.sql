@@ -2,6 +2,7 @@
 
 --Create Date:        2021-06-22
 --Author:             Beingnin
+
 DECLARE @QUERY NVARCHAR(200)='';
 
 DECLARE C CURSOR

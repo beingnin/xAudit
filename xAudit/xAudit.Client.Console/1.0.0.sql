@@ -1,5 +1,7 @@
+--Procedure:          xAudit.Insert_New_Version 
 --Create Date:        2021-06-02
 --Author:             Akshaya Sakthivel
+--Description:        This procedure inserts the newer of the already existing application.
 
 CREATE PROCEDURE xAudit.Insert_New_Version 
 (
@@ -36,14 +38,17 @@ BEGIN
 				GETUTCDATE()
 			);
 END
+GO
 
-
-
+--Procedure:          xAudit.Find_Current_Version
+--Create Date:        2021-06-02
+--Author:             Akshaya Sakthivel
+--Description:        This procedure get the current version of all the installed versions.
 CREATE PROCEDURE xAudit.Find_Current_Version AS
 BEGIN
 	SELECT TOP 1 [Version] FROM xAudit.Meta WHERE [IsCurrentVersion]=1 ORDER BY [CreatedDateUTC] DESC;
 END
-
+GO
 
 CREATE PROCEDURE xAudit.Enable_CDC_On_DB
 (
@@ -55,7 +60,7 @@ BEGIN
 		EXEC sys.sp_cdc_enable_db
 	END
 END
-
+GO
 
 CREATE PROCEDURE xAudit.Enable_CDC_On_DB_Recreate
 (
@@ -71,4 +76,4 @@ BEGIN
 		EXEC sys.sp_cdc_enable_db
 	END
 END
-
+GO

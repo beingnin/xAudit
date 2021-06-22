@@ -32,6 +32,7 @@ namespace xAudit.Client.Console.FW
                 Console.WriteLine(ex.Message);
                 throw;
             }
+            Console.WriteLine("Ran completely");
             Console.ReadKey();
         }
     }

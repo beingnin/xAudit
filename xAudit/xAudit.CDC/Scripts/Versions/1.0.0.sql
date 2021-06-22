@@ -1,8 +1,3 @@
-
-
-
-
-
 --Procedure:          xAudit.Insert_New_Version 
 --Create Date:        2021-06-02
 --Author:             Akshaya Sakthivel
@@ -16,11 +11,13 @@ CREATE PROCEDURE xAudit.Insert_New_Version
 	@minor INT,
 	@patch INT,
 	@processId INT,
-	@totalTables INT
+	@totalTables INT,
+	@trackSchemaChanges bit,
+	@enablePartition bit,
+	@keepVersionsForPartition bit
 ) AS
 BEGIN
-	BEGIN TRAN
-		BEGIN TRY
+
 			
 			UPDATE xAudit.Meta SET [IsCurrentVersion]=0;
 
@@ -35,13 +32,11 @@ BEGIN
 				@processId,
 				@totalTables,
 				1,
+				@trackSchemaChanges,
+				@enablePartition,
+				@keepVersionsForPartition,
 				GETUTCDATE()
 			);
-			COMMIT
-		END TRY
-		BEGIN CATCH
-			ROLLBACK
-		END CATCH
 END
 GO
 

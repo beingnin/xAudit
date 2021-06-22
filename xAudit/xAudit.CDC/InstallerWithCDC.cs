@@ -31,6 +31,20 @@ namespace xAudit.CDC
             }
 
         }
+
+        public async Task UpdateAsync(string DbSchema)
+        {
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required,
+                                                          new TransactionOptions() { IsolationLevel = IsolationLevel.ReadCommitted },
+                                                          TransactionScopeAsyncFlowOption.Enabled))
+            {
+                string path = Path.Combine(Environment.CurrentDirectory, "Scripts", "cleanup.sql");
+                StringBuilder query = new StringBuilder(File.ReadAllText(path, Encoding.UTF8));
+                query = query.Replace("xAudit", DbSchema);
+                await _sqlServerDriver.ExecuteTextAsync(query.ToString(), null);
+                transaction.Complete();
+            }
+        }
         public Task UnInstallAsync()
         {
             return null;

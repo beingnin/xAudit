@@ -9,7 +9,7 @@ namespace xAudit.CDC
 {
     public class ReplicatorUsingCDC : IReplicator
     {
-        private enum WhatNext { NoUpdate, Install, Upgrade, Downgrade }
+        
         private string _sourceCon = null;
         private string _partitionCon = null;
         private SqlServerDriver _sqlServerDriver = null;

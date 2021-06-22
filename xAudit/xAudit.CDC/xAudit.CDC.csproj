@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Scripts\cleanup.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\meta.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

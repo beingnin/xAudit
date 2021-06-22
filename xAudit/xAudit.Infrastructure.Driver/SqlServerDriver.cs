@@ -9,11 +9,12 @@ namespace xAudit.Infrastructure.Driver
     public class SqlServerDriver
     {
         private string _SourceCon;
-        private SqlConnection _SourceConnection => new SqlConnection(_SourceCon);
+        private SqlConnection _SourceConnection;
         public string SourceDB => _SourceConnection.Database;
         public SqlServerDriver(string sourceCon)
         {
             _SourceCon = sourceCon;
+            _SourceConnection= new SqlConnection(_SourceCon);
         }
 
         public async Task<DataSet> GetDataSetAsync(string procedure, IDataParameter[] parameters, CancellationToken cancellationToken = default(CancellationToken))
@@ -40,7 +41,7 @@ namespace xAudit.Infrastructure.Driver
                 Close();
             }
         }
-        public async Task<DataTable> GetDataTableAsync(string procedure, IDataParameter[] parameters, CommandType commandType=CommandType.StoredProcedure, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<DataTable> GetDataTableAsync(string procedure, IDataParameter[] parameters, CommandType commandType = CommandType.StoredProcedure, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
@@ -48,15 +49,15 @@ namespace xAudit.Infrastructure.Driver
                 {
                     cmd.CommandText = procedure;
                     cmd.CommandType = commandType;
-                   if(parameters!=null && parameters.Length>0)
+                    if (parameters != null && parameters.Length > 0)
                         cmd.Parameters.AddRange(parameters);
                     cmd.Connection = _SourceConnection;
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(cmd))
                     {
-                        await OpenAsync(cancellationToken).ConfigureAwait(false);
+                        //await OpenAsync(cancellationToken).ConfigureAwait(false);
                         DataTable dt = new DataTable();
                         sqlDataAdapter.Fill(dt);
-                        return dt;
+                        return Task.FromResult(dt);
                     }
                 }
             }
@@ -77,6 +78,26 @@ namespace xAudit.Infrastructure.Driver
                     cmd.Parameters.AddRange(parameters);
                     cmd.Connection = _SourceConnection;
                     await OpenAsync(cancellationToken);
+                    return await cmd.ExecuteNonQueryAsync(cancellationToken);
+                }
+            }
+            finally
+            {
+                Close();
+            }
+        }
+        public async Task<int> ExecuteTextAsync(string query, IDataParameter[] parameters, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    await OpenAsync(cancellationToken).ConfigureAwait(false);
+                    cmd.CommandText = query;
+                    cmd.CommandType = CommandType.Text;
+                    if (parameters != null && parameters.Length > 0)
+                        cmd.Parameters.AddRange(parameters);
+                    cmd.Connection = _SourceConnection;
                     return await cmd.ExecuteNonQueryAsync(cancellationToken);
                 }
             }

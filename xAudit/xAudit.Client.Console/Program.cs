@@ -20,6 +20,7 @@ namespace xAudit.Client.Console.FW
                              .UseCDC()
                              .TrackSchemaChanges()
                              .EnablePartition()
+                             .SetInstanceName("Nithin")
                              .GetReplicator();
             try
             {

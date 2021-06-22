@@ -9,18 +9,17 @@ namespace xAudit.CDC
 {
     public class ReplicatorUsingCDC : IReplicator
     {
-        private enum WhatNext { NoUpdate,Install, Upgrade,Downgrade}
+        private enum WhatNext { NoUpdate, Install, Upgrade, Downgrade }
         private string _sourceCon = null;
         private string _partitionCon = null;
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public Version CurrentVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public Version CurrentVersion => "1.0.0";
         private ReplicatorUsingCDC()
         {
-            Console.WriteLine("object created");
         }
-        public static ReplicatorUsingCDC GetInstance( CDCReplicatorOptions options,string sourceCon, string partitionCon)
+        public static ReplicatorUsingCDC GetInstance(CDCReplicatorOptions options, string sourceCon, string partitionCon)
         {
             _instance.Value._sourceCon = sourceCon;
             _instance.Value._partitionCon = partitionCon;
@@ -52,6 +51,7 @@ namespace xAudit.CDC
                 case WhatNext.NoUpdate:
                     break;
                 case WhatNext.Install:
+                    await Install();
                     break;
                 case WhatNext.Upgrade:
                     break;
@@ -75,9 +75,10 @@ namespace xAudit.CDC
 
         #region private-methods
 
-        private Task ExecuteInitialScriptsAsync()
+        private async Task Install()
         {
-            return null;
+            var installer = new InstallerWithCDC(this.CurrentVersion,this._sqlServerDriver);
+            await installer.InstallAsync(this._options.InstanceName);
         }
         private Task ExecuteVersionUpdateScriptsAsync()
         {
@@ -89,7 +90,7 @@ namespace xAudit.CDC
                                          (SELECT COUNT(1) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{0}' AND TABLE_NAME = 'Meta') > 0
                                          SELECT  1 AS IsExists, (SELECT TOP(1) [Version] FROM xAudit.Meta WHERE IsCurrentVersion = 1) AS [Version]
                                          ELSE SELECT 0 AS IsExists, NULL AS [Version]", _options.InstanceName);
-            var dt = await _sqlServerDriver.GetDataTableAsync(query, null,System.Data.CommandType.Text);
+            var dt = await _sqlServerDriver.GetDataTableAsync(query, null, System.Data.CommandType.Text);
             var exists = Convert.ToBoolean(dt.Rows[0]["IsExists"]);
             Version version = Convert.ToString(dt.Rows[0]["Version"]);
 

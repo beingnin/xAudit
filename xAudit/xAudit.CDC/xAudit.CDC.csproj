@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
+<Target Name="AfterBuild">
+	<Copy SourceFiles="$(OutputPath)yourfiles" DestinationFolder="$(YourVariable)" ContinueOnError="true" />
+</Target>
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <NeutralLanguage></NeutralLanguage>
@@ -20,6 +22,15 @@
     <ProjectReference Include="..\xAudit.Contracts\xAudit.Contracts.csproj" />
     <ProjectReference Include="..\xAudit.Infrastructure.Driver\xAudit.Infrastructure.Driver.csproj" />
     <ProjectReference Include="..\xAudit.Primitives\xAudit.Primitives.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Scripts\meta.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\Versions\1.0.0.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

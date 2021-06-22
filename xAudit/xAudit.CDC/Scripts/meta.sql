@@ -1,7 +1,5 @@
 
---	Begin tran 
---	commit
---	rollback
+
 
 
 IF NOT EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE [SCHEMA_NAME]='xAudit')
@@ -25,5 +23,5 @@ BEGIN
 		[IsCurrentVersion] BIT DEFAULT 0,
 		[InstalledDateUTC] DATETIME NOT NULL,
 	);
-END;
-GO
+END
+

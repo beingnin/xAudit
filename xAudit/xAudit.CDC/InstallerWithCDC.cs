@@ -32,7 +32,7 @@ namespace xAudit.CDC
 
         }
 
-        public async Task UpdateAsync(string DbSchema)
+        public async Task UpgradeAsync(string DbSchema)
         {
             using (var transaction = new TransactionScope(TransactionScopeOption.Required,
                                                           new TransactionOptions() { IsolationLevel = IsolationLevel.ReadCommitted },
@@ -45,7 +45,7 @@ namespace xAudit.CDC
                 transaction.Complete();
             }
         }
-        public Task UnInstallAsync()
+        public Task UninstallAsync()
         {
             return null;
         }

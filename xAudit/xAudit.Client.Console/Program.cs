@@ -24,7 +24,7 @@ namespace xAudit.Client.Console.FW
                              .GetReplicator();
             try
             {
-
+                
                await replicator.StartAsync();
             }
             catch (Exception ex)

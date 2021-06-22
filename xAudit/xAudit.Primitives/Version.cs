@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace xAudit
 {
-    public  struct Version : IEquatable<Version>, IComparable<Version>
+    public struct Version : IEquatable<Version>, IComparable<Version>, IComparer<Version>
     {
 
         public int Major { get; set; }
@@ -104,6 +105,34 @@ namespace xAudit
                 hash = hash * 23 + this.Patch.GetHashCode();
                 return hash;
             }
+        }
+        /// <summary>
+        /// Will return the previous lowest version relative to this version among the list of versions passed 
+        /// </summary>
+        /// <param name="versions">The list of versions from which the output is computed</param>
+        /// <returns></returns>
+        public Version FindImmediatePrevious(params Version[] versions)
+        {
+            var self = this;
+            return versions.ToList().Where(x => x < self).Max();
+        }
+        /// <summary>
+        /// Will return the next highest version relative to this version among the list of versions passed 
+        /// </summary>
+        /// <param name="versions">The list of versions from which the output is computed</param>
+        /// <returns></returns>
+        public Version FindImmediateNext(params Version[] versions)
+        {
+            var self = this;
+            return versions.ToList().Where(x => x > self).Min();
+        }
+        public int Compare(Version x, Version y)
+        {
+            if (x > y)
+                return 1;
+            if (x < y)
+                return -1;
+            return 0;
         }
     }
 }

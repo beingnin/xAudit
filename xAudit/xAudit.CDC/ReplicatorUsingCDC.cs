@@ -9,7 +9,7 @@ namespace xAudit.CDC
 {
     public class ReplicatorUsingCDC : IReplicator
     {
-        
+
         private string _sourceCon = null;
         private string _partitionCon = null;
         private SqlServerDriver _sqlServerDriver = null;
@@ -77,7 +77,7 @@ namespace xAudit.CDC
 
         private async Task Install()
         {
-            var installer = new InstallerWithCDC(this.CurrentVersion,this._sqlServerDriver);
+            var installer = new InstallerWithCDC(this.CurrentVersion, this._sqlServerDriver);
             await installer.InstallAsync(this._options.InstanceName);
             await installer.UpgradeAsync(this._options.InstanceName);
         }

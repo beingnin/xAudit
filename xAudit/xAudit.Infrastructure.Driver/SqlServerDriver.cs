@@ -125,7 +125,6 @@ namespace xAudit.Infrastructure.Driver
                 Close();
             }
         }
-
         private async Task OpenAsync(CancellationToken cancellationToken)
         {
             if (_SourceConnection.State == ConnectionState.Closed)

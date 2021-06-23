@@ -4,5 +4,6 @@ using System.Text;
 
 namespace xAudit
 {
-    public enum WhatNext { NoUpdate, Install, Upgrade, Downgrade }
+    [Flags]
+    public enum WhatNext { NoUpdate, Install, Upgrade, Downgrade,ConfigChanged }
 }

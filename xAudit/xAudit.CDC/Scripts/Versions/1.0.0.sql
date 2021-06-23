@@ -37,13 +37,13 @@ BEGIN
 			);
 END
 
-
+GO
 
 CREATE PROCEDURE xAudit.Find_Current_Version AS
 BEGIN
 	SELECT TOP 1 [Version] FROM xAudit.Meta WHERE [IsCurrentVersion]=1 ORDER BY [CreatedDateUTC] DESC;
 END
-
+GO
 
 CREATE PROCEDURE xAudit.Enable_CDC_On_DB
 (
@@ -55,7 +55,7 @@ BEGIN
 		EXEC sys.sp_cdc_enable_db
 	END
 END
-
+GO
 
 CREATE PROCEDURE xAudit.Enable_CDC_On_DB_Recreate
 (
@@ -72,3 +72,4 @@ BEGIN
 	END
 END
 
+GO

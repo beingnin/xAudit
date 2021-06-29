@@ -80,6 +80,8 @@ namespace xAudit.CDC
             var installer = new InstallerWithCDC(this.CurrentVersion, this._sqlServerDriver);
             await installer.InstallAsync(this._options.InstanceName);
             await installer.UpgradeAsync(this._options.InstanceName);
+            await installer.CheckAgentStatus();
+            await installer.EnableCDC(true);
         }
         private async Task<WhatNext> WhatToDoNextAsync()
         {

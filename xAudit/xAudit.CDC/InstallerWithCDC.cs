@@ -37,12 +37,12 @@ namespace xAudit.CDC
         {
             string versionScriptPath = Path.Combine(Environment.CurrentDirectory, "Scripts", "Versions");
             var cleanupScriptPath = Path.Combine(Environment.CurrentDirectory, "Scripts", "cleanup.sql");
-            if (File.Exists(versionScriptPath +"\\"+ _currentVersion + ".sql"))
-                versionScriptPath = versionScriptPath+"\\" + _currentVersion + ".sql";
+            if (File.Exists(versionScriptPath + "\\" + _currentVersion + ".sql"))
+                versionScriptPath = versionScriptPath + "\\" + _currentVersion + ".sql";
             else
             {
                 Version previousVersion = _currentVersion.FindImmediatePrevious(Directory.GetFiles(versionScriptPath).Select(x => (Version)Path.GetFileNameWithoutExtension(x)).ToArray());
-                versionScriptPath = versionScriptPath +"\\"+ previousVersion + ".sql";
+                versionScriptPath = versionScriptPath + "\\" + previousVersion + ".sql";
             }
 
 
@@ -57,10 +57,28 @@ namespace xAudit.CDC
 
                 //execute current version scripts. Create all SP, UDF etc belongs to current version
                 query = query.Clear();
-                query=query.Append(File.ReadAllText(versionScriptPath, Encoding.UTF8)).Replace("xAudit", DbSchema);
-                await _sqlServerDriver.ExecuteTextAsync(query.ToString(),null);
+                query = query.Append(File.ReadAllText(versionScriptPath, Encoding.UTF8)).Replace("xAudit", DbSchema);
+                await _sqlServerDriver.ExecuteTextAsync(query.ToString(), null);
                 transaction.Complete();
             }
+        }
+
+        public async Task<int> CheckAgentStatus()
+        {
+            string query = string.Format(@"SELECT dss.[status] FROM   sys.dm_server_services dss
+                                            WHERE  dss.[servicename] LIKE N'SQL Server Agent (%';", null);
+
+            var status = await _sqlServerDriver.ExecuteTextAsync(query, null);
+            return status;
+        }
+        public async Task<bool> EnableCDC(bool isAgentRunning)
+        {
+            if (isAgentRunning)
+            {
+                var cdc = await _sqlServerDriver.ExecuteNonQueryAsync("sys.sp_cdc_enable_db", null);
+                return cdc > 0;
+            }
+            return false;
         }
         public Task UninstallAsync()
         {

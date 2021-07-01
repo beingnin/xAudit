@@ -53,7 +53,7 @@ namespace xAudit.CDC
                 //execute cleanup query. Delete all SP, UDF etc belongs to current version
                 StringBuilder query = new StringBuilder(File.ReadAllText(cleanupScriptPath, Encoding.UTF8));
                 query = query.Replace("xAudit", DbSchema);
-                await _sqlServerDriver.ExecuteTextAsync(query.ToString(), null);
+                await _sqlServerDriver.ExecuteScriptAsync(query.ToString());
 
                 //execute current version scripts. Create all SP, UDF etc belongs to current version
                 query = query.Clear();

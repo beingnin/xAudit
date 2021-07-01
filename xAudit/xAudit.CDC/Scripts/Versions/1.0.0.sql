@@ -1,75 +1,67 @@
---Create Date:        2021-06-02
---Author:             Akshaya Sakthivel
+--CREATE DATE:        2021-06-02
+--AUTHOR:             AKSHAYA SAKTHIVEL
 
-CREATE PROCEDURE xAudit.Insert_New_Version 
+CREATE PROCEDURE XAUDIT.INSERT_NEW_VERSION 
 (
-	@version VARCHAR(20),
-	@machine VARCHAR(100),
-	@major INT,
-	@minor INT,
-	@patch INT,
-	@processId INT,
-	@totalTables INT,
-	@trackSchemaChanges bit,
-	@enablePartition bit,
-	@keepVersionsForPartition bit
+	@VERSION VARCHAR(20),
+	@MACHINE VARCHAR(100),
+	@MAJOR INT,
+	@MINOR INT,
+	@PATCH INT,
+	@PROCESSID INT,
+	@TOTALTABLES INT,
+	@TRACKSCHEMACHANGES BIT,
+	@ENABLEPARTITION BIT,
+	@KEEPVERSIONSFORPARTITION BIT
 ) AS
-BEGIN
+BEGIN			
+			UPDATE XAUDIT.META SET [ISCURRENTVERSION]=0;
 
-			
-			UPDATE xAudit.Meta SET [IsCurrentVersion]=0;
-
-			INSERT INTO xAudit.Meta
+			INSERT INTO XAUDIT.META
 			VALUES 
 			(
-				@version,
-				@machine,
-				@major,
-				@minor,
-				@patch,
-				@processId,
-				@totalTables,
+				@VERSION,
+				@MACHINE,
+				@MAJOR,
+				@MINOR,
+				@PATCH,
+				@PROCESSID,
+				@TOTALTABLES,
 				1,
-				@trackSchemaChanges,
-				@enablePartition,
-				@keepVersionsForPartition,
+				@TRACKSCHEMACHANGES,
+				@ENABLEPARTITION,
+				@KEEPVERSIONSFORPARTITION,
 				GETUTCDATE()
 			);
 END
-
 GO
 
-CREATE PROCEDURE xAudit.Find_Current_Version AS
+CREATE PROCEDURE XAUDIT.FIND_CURRENT_VERSION AS
 BEGIN
-	SELECT TOP 1 [Version] FROM xAudit.Meta WHERE [IsCurrentVersion]=1 ORDER BY [CreatedDateUTC] DESC;
+	SELECT TOP 1 [VERSION] FROM XAUDIT.META WHERE [ISCURRENTVERSION]=1 ORDER BY [CREATEDDATEUTC] DESC;
 END
 GO
 
-CREATE PROCEDURE xAudit.Enable_CDC_On_DB
-(
-	@db VARCHAR(100)
-)AS
+CREATE PROCEDURE XAUDIT.ENABLE_CDC_ON_DB
+AS
 BEGIN
-	IF NOT EXISTS (SELECT 1 FROM sys.databases WHERE is_cdc_enabled=1 and [name] = @db )
+	IF NOT EXISTS (SELECT 1 FROM SYS.DATABASES WHERE IS_CDC_ENABLED=1 AND [NAME] =(SELECT DB_NAME()) )
 	BEGIN
-		EXEC sys.sp_cdc_enable_db
+		EXEC SYS.SP_CDC_ENABLE_DB
 	END
 END
 GO
 
-CREATE PROCEDURE xAudit.Enable_CDC_On_DB_Recreate
-(
-	@db VARCHAR(100)
-)AS
+CREATE PROCEDURE XAUDIT.ENABLE_CDC_ON_DB_RECREATE
+AS
 BEGIN
-	IF NOT EXISTS (SELECT * FROM sys.databases WHERE is_cdc_enabled=1 and [name] = @db )
+	IF NOT EXISTS (SELECT * FROM SYS.DATABASES WHERE IS_CDC_ENABLED=1 AND [NAME] = (SELECT DB_NAME()) )
 	BEGIN
-		EXEC sys.sp_cdc_enable_db
+		EXEC SYS.SP_CDC_ENABLE_DB
 	END
 	ELSE BEGIN
-		EXEC sys.sp_cdc_disable_db
-		EXEC sys.sp_cdc_enable_db
+		EXEC SYS.SP_CDC_DISABLE_DB
+		EXEC SYS.SP_CDC_ENABLE_DB
 	END
 END
-
 GO

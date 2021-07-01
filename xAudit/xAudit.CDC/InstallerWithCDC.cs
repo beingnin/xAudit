@@ -71,9 +71,9 @@ namespace xAudit.CDC
             var status = await _sqlServerDriver.ExecuteTextScalarAsync(query, null);
             return Convert.ToInt32(status) == 4;
         }
-        public async Task<bool> EnableCDC()
-        {
-            await _sqlServerDriver.ExecuteNonQueryAsync("sys.sp_cdc_enable_db", null);
+        public async Task<bool> EnableCDC(string DbSchema)
+        {           
+            await _sqlServerDriver.ExecuteNonQueryAsync(DbSchema+".Enable_CDC_On_DB", null);
             return true;
         }
         public Task UninstallAsync()

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
@@ -14,7 +16,7 @@ namespace xAudit.Infrastructure.Driver
         public SqlServerDriver(string sourceCon)
         {
             _SourceCon = sourceCon;
-            _SourceConnection= new SqlConnection(_SourceCon);
+            _SourceConnection = new SqlConnection(_SourceCon);
         }
 
         public async Task<DataSet> GetDataSetAsync(string procedure, IDataParameter[] parameters, CancellationToken cancellationToken = default(CancellationToken))
@@ -75,7 +77,7 @@ namespace xAudit.Infrastructure.Driver
                 {
                     cmd.CommandText = procedure;
                     cmd.CommandType = CommandType.StoredProcedure;
-                    if (parameters!=null && parameters.Length>0)
+                    if (parameters != null && parameters.Length > 0)
                     {
                         cmd.Parameters.AddRange(parameters);
                     }
@@ -102,6 +104,32 @@ namespace xAudit.Infrastructure.Driver
                         cmd.Parameters.AddRange(parameters);
                     cmd.Connection = _SourceConnection;
                     return await cmd.ExecuteNonQueryAsync(cancellationToken);
+                }
+            }
+            finally
+            {
+                Close();
+            }
+        }
+        public async Task ExecuteScriptAsync(string script, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                var batches = Regex.Split(script, @"\bGO\b");
+
+
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    await OpenAsync(cancellationToken).ConfigureAwait(false);
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Connection = _SourceConnection;
+                    List<Task> tasks = new List<Task>(batches.Length);
+                    foreach (var batch in batches)
+                    {
+                        cmd.CommandText = script;
+                        tasks.Add(cmd.ExecuteNonQueryAsync(cancellationToken));
+                    }
+                    await Task.WhenAll(tasks);
                 }
             }
             finally
@@ -137,10 +165,10 @@ namespace xAudit.Infrastructure.Driver
                 {
                     cmd.CommandText = query;
                     cmd.CommandType = CommandType.Text;
-                    if(parameters!=null && parameters.Length>0)
+                    if (parameters != null && parameters.Length > 0)
                     {
                         cmd.Parameters.AddRange(parameters);
-                    }                    
+                    }
                     cmd.Connection = _SourceConnection;
                     await OpenAsync(cancellationToken);
                     return await cmd.ExecuteScalarAsync(cancellationToken);

@@ -85,7 +85,7 @@ namespace xAudit.CDC
             }
             await installer.InstallAsync(this._options.InstanceName);
             await installer.UpgradeAsync(this._options.InstanceName);           
-            await installer.EnableCDC();
+            await installer.EnableCDC(this._options.InstanceName);
         }
         private async Task<WhatNext> WhatToDoNextAsync()
         {

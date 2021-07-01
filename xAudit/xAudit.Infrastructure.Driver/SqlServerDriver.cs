@@ -75,7 +75,10 @@ namespace xAudit.Infrastructure.Driver
                 {
                     cmd.CommandText = procedure;
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddRange(parameters);
+                    if (parameters!=null && parameters.Length>0)
+                    {
+                        cmd.Parameters.AddRange(parameters);
+                    }
                     cmd.Connection = _SourceConnection;
                     await OpenAsync(cancellationToken);
                     return await cmd.ExecuteNonQueryAsync(cancellationToken);
@@ -115,6 +118,29 @@ namespace xAudit.Infrastructure.Driver
                     cmd.CommandText = procedure;
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddRange(parameters);
+                    cmd.Connection = _SourceConnection;
+                    await OpenAsync(cancellationToken);
+                    return await cmd.ExecuteScalarAsync(cancellationToken);
+                }
+            }
+            finally
+            {
+                Close();
+            }
+        }
+
+        public async Task<object> ExecuteTextScalarAsync(string query, IDataParameter[] parameters, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.CommandText = query;
+                    cmd.CommandType = CommandType.Text;
+                    if(parameters!=null && parameters.Length>0)
+                    {
+                        cmd.Parameters.AddRange(parameters);
+                    }                    
                     cmd.Connection = _SourceConnection;
                     await OpenAsync(cancellationToken);
                     return await cmd.ExecuteScalarAsync(cancellationToken);

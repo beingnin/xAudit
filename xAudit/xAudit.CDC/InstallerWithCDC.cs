@@ -63,22 +63,18 @@ namespace xAudit.CDC
             }
         }
 
-        public async Task<int> CheckAgentStatus()
+        public async Task<bool> IsAgentRunning()
         {
-            string query = string.Format(@"SELECT dss.[status] FROM   sys.dm_server_services dss
-                                            WHERE  dss.[servicename] LIKE N'SQL Server Agent (%';", null);
+            string query = @"SELECT dss.[status] FROM   sys.dm_server_services dss
+                                            WHERE  dss.[servicename] LIKE N'SQL Server Agent (%';";
 
-            var status = await _sqlServerDriver.ExecuteTextAsync(query, null);
-            return status;
+            var status = await _sqlServerDriver.ExecuteTextScalarAsync(query, null);
+            return Convert.ToInt32(status) == 4;
         }
-        public async Task<bool> EnableCDC(bool isAgentRunning)
+        public async Task<bool> EnableCDC()
         {
-            if (isAgentRunning)
-            {
-                var cdc = await _sqlServerDriver.ExecuteNonQueryAsync("sys.sp_cdc_enable_db", null);
-                return cdc > 0;
-            }
-            return false;
+            await _sqlServerDriver.ExecuteNonQueryAsync("sys.sp_cdc_enable_db", null);
+            return true;
         }
         public Task UninstallAsync()
         {

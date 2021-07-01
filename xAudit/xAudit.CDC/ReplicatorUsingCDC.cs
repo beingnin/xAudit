@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using xAudit.CDC.Exceptions;
 using xAudit.Contracts;
 using xAudit.Infrastructure.Driver;
 
@@ -78,10 +79,13 @@ namespace xAudit.CDC
         private async Task Install()
         {
             var installer = new InstallerWithCDC(this.CurrentVersion, this._sqlServerDriver);
+            if (!await installer.IsAgentRunning())
+            {
+                throw new SqlSeverAgentNotFoundException("xAudit needs Sql Sever Agent to be running");
+            }
             await installer.InstallAsync(this._options.InstanceName);
-            await installer.UpgradeAsync(this._options.InstanceName);
-            await installer.CheckAgentStatus();
-            await installer.EnableCDC(true);
+            await installer.UpgradeAsync(this._options.InstanceName);           
+            await installer.EnableCDC();
         }
         private async Task<WhatNext> WhatToDoNextAsync()
         {

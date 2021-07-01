@@ -78,6 +78,7 @@ namespace xAudit.Infrastructure.Driver
                     cmd.CommandText = procedure;
                     cmd.CommandType = CommandType.StoredProcedure;
                     if (parameters != null && parameters.Length > 0)
+
                     {
                         cmd.Parameters.AddRange(parameters);
                     }
@@ -126,7 +127,7 @@ namespace xAudit.Infrastructure.Driver
                     List<Task> tasks = new List<Task>(batches.Length);
                     foreach (var batch in batches)
                     {
-                        cmd.CommandText = script;
+                        cmd.CommandText = batch;
                         tasks.Add(cmd.ExecuteNonQueryAsync(cancellationToken));
                     }
                     await Task.WhenAll(tasks);

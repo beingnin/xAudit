@@ -16,10 +16,20 @@ namespace xAudit.Client.Console.FW
             {
                 { 
                     "dbo",new string[]
-                        { 
-                            "products",
-                            "groups"
-                        }
+                    { 
+                        "products",
+                        "groups"
+                    }
+                },
+                {
+
+                    "ofc",new string[]
+                    {
+                        "mails",
+                        "senders",
+                        "priorities"
+
+                    }
                 }
             };
 

@@ -42,7 +42,7 @@ namespace xAudit.CDC
 
         public async Task UpgradeAsync(string DbSchema,CDCReplicatorOptions option)
         {
-            Console.WriteLine("Installing current version...");
+            Console.WriteLine("Installing version "+_currentVersion+"...");
             await this.IsAgentRunning();
             string versionScriptPath = Path.Combine(Environment.CurrentDirectory, "Scripts", "Versions");
             var cleanupScriptPath = Path.Combine(Environment.CurrentDirectory, "Scripts", "cleanup.sql");
@@ -52,6 +52,7 @@ namespace xAudit.CDC
             {
                 Version previousVersion = _currentVersion.FindImmediatePrevious(Directory.GetFiles(versionScriptPath).Select(x => (Version)Path.GetFileNameWithoutExtension(x)).ToArray());
                 versionScriptPath = versionScriptPath + "\\" + previousVersion + ".sql";
+                Console.WriteLine("script  not found for current version. Instead executing previous version "+previousVersion);
             }
 
 

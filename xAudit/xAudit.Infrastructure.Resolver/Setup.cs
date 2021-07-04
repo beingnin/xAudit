@@ -49,7 +49,7 @@ namespace xAudit.Infrastructure.Resolver
         }
         public Setup EnablePartition(bool keepVersions = false)
         {
-            _enablePartition = false;
+            _enablePartition = true;
             _keepVersionsForPartitions = keepVersions;
             return this;
         }

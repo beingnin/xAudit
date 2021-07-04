@@ -13,11 +13,12 @@ namespace xAudit.Client.Console.FW
         {
             var tables = new Dictionary<string, string[]>()
             {
-                { "dbo",new string[]
+                { 
+                    "dbo",new string[]
                         { 
                             "products",
                             "groups"
-                        } 
+                        }
                 }
             };
 

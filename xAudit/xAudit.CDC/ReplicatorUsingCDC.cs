@@ -13,7 +13,7 @@ namespace xAudit.CDC
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public Version CurrentVersion => "1.0.2";
+        public Version CurrentVersion => "1.0.3";
         private ReplicatorUsingCDC()
         {
         }
@@ -44,7 +44,7 @@ namespace xAudit.CDC
         public async Task StartAsync()
         {
             var action = await WhatToDoNextAsync();
-            Console.WriteLine("status :"+action);
+            Console.WriteLine("status :" + action);
             switch (action)
             {
                 case WhatNext.NoUpdate:
@@ -53,6 +53,7 @@ namespace xAudit.CDC
                     await RunInstallationLogic();
                     break;
                 case WhatNext.Upgrade:
+                    await RunUpgradationLogic();
                     break;
                 case WhatNext.Downgrade:
                     break;
@@ -77,12 +78,16 @@ namespace xAudit.CDC
         #region private-methods
         private async Task RunInstallationLogic()
         {
-            
-            var installer = new InstallerWithCDC(this.CurrentVersion, this._sqlServerDriver);
 
+            var installer = new InstallerWithCDC(this.CurrentVersion, this._sqlServerDriver);
             await installer.InstallAsync(this._options.InstanceName);
-            await installer.UpgradeAsync(this._options.InstanceName,this._options);         
-            
+            await installer.UpgradeAsync(this._options.InstanceName, this._options);
+
+        }
+        private Task RunUpgradationLogic()
+        {
+            var installer = new InstallerWithCDC(this.CurrentVersion, this._sqlServerDriver);
+            return installer.UpgradeAsync(this._options.InstanceName, this._options);
         }
         private async Task<bool> EnableCDC(string DbSchema)
         {

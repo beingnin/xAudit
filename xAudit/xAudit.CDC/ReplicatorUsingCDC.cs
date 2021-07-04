@@ -44,6 +44,7 @@ namespace xAudit.CDC
         public async Task StartAsync()
         {
             var action = await WhatToDoNextAsync();
+            Console.WriteLine("status :"+action);
             switch (action)
             {
                 case WhatNext.NoUpdate:
@@ -76,10 +77,11 @@ namespace xAudit.CDC
         #region private-methods
         private async Task RunInstallationLogic()
         {
+            
             var installer = new InstallerWithCDC(this.CurrentVersion, this._sqlServerDriver);
 
             await installer.InstallAsync(this._options.InstanceName);
-            await installer.UpgradeAsync(this._options.InstanceName);         
+            await installer.UpgradeAsync(this._options.InstanceName,this._options);         
             
         }
         private async Task<bool> EnableCDC(string DbSchema)

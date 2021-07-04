@@ -15,7 +15,7 @@ namespace xAudit.CDC
             get => _instance ?? "xAudit";
             set => _instance = value;
         }
-        public IDictionary<string, string> Tables { get; set; }
+        public IDictionary<string, string[]> Tables { get; set; }
        
     }
 }

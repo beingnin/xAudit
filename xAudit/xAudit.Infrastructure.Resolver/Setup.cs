@@ -18,7 +18,7 @@ namespace xAudit.Infrastructure.Resolver
         private bool _trackSchemaChanges = false;
         private bool _enablePartition = true;
         private bool _keepVersionsForPartitions = false;
-        private IDictionary<string, string> _tables = null;
+        private IDictionary<string, string[]> _tables = null;
         public Setup(string sourceConnection, string partitionConnection = null)
         {
             _sourceConnection = sourceConnection;
@@ -53,7 +53,7 @@ namespace xAudit.Infrastructure.Resolver
             _keepVersionsForPartitions = keepVersions;
             return this;
         }
-        public Setup Tables(Dictionary<string, string> tables)
+        public Setup Tables(IDictionary<string, string[]> tables)
         {
             _tables = tables;
             return this;

@@ -49,7 +49,7 @@ namespace xAudit.CDC
                 case WhatNext.NoUpdate:
                     break;
                 case WhatNext.Install:
-                    await Install();
+                    await RunInstallationLogic();
                     break;
                 case WhatNext.Upgrade:
                     break;
@@ -74,8 +74,7 @@ namespace xAudit.CDC
 
 
         #region private-methods
-
-        private async Task Install()
+        private async Task RunInstallationLogic()
         {
             var installer = new InstallerWithCDC(this.CurrentVersion, this._sqlServerDriver);
 

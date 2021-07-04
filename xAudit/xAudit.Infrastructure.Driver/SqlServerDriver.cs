@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -116,21 +117,18 @@ namespace xAudit.Infrastructure.Driver
         {
             try
             {
-                var batches = Regex.Split(script, @"\bGO\b");
-
-
+                var batches = Regex.Split(script, @"\bGO\b").Where(x=>!string.IsNullOrWhiteSpace(x));
                 using (SqlCommand cmd = new SqlCommand())
                 {
                     await OpenAsync(cancellationToken).ConfigureAwait(false);
                     cmd.CommandType = CommandType.Text;
                     cmd.Connection = _SourceConnection;
-                    List<Task> tasks = new List<Task>(batches.Length);
                     foreach (var batch in batches)
                     {
+
                         cmd.CommandText = batch;
-                        tasks.Add(cmd.ExecuteNonQueryAsync(cancellationToken));
+                        await cmd.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
                     }
-                    await Task.WhenAll(tasks);
                 }
             }
             finally

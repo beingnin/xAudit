@@ -6,12 +6,13 @@ namespace xAudit.Client.Console.FW
     using System.Threading.Tasks;
     using xAudit.Contracts;
     using xAudit.Infrastructure.Resolver;
+    using xAudit.Primitives;
 
     class Program
     {
         static async Task Main(string[] args)
         {
-            var tables = new Dictionary<string, string[]>()
+            var tables = new AuditTableCollection()
             {
                 { 
                     "dbo",new string[]

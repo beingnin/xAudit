@@ -104,6 +104,10 @@
       <Project>{a5f5adbb-691f-41fc-b2ee-adeb8660ec6e}</Project>
       <Name>xAudit.Infrastructure.Resolver</Name>
     </ProjectReference>
+    <ProjectReference Include="..\xAudit.Primitives\xAudit.Primitives.csproj">
+      <Project>{0f01156e-727a-42a1-947c-9d4a3cea81a3}</Project>
+      <Name>xAudit.Primitives</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

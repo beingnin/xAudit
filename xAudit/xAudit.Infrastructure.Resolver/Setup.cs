@@ -2,6 +2,7 @@
 using xAudit.Contracts;
 using xAudit.CDC;
 using System.Collections.Generic;
+using xAudit.Primitives;
 
 namespace xAudit.Infrastructure.Resolver
 {
@@ -18,7 +19,7 @@ namespace xAudit.Infrastructure.Resolver
         private bool _trackSchemaChanges = false;
         private bool _enablePartition = true;
         private bool _keepVersionsForPartitions = false;
-        private IDictionary<string, string[]> _tables = null;
+        private AuditTableCollection _tables = null;
         public Setup(string sourceConnection, string partitionConnection = null)
         {
             _sourceConnection = sourceConnection;
@@ -53,7 +54,7 @@ namespace xAudit.Infrastructure.Resolver
             _keepVersionsForPartitions = keepVersions;
             return this;
         }
-        public Setup Tables(IDictionary<string, string[]> tables)
+        public Setup Tables(AuditTableCollection tables)
         {
             _tables = tables;
             return this;

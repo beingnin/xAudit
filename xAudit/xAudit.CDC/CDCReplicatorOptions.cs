@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using xAudit.Primitives;
 
 namespace xAudit.CDC
 {
@@ -15,7 +16,7 @@ namespace xAudit.CDC
             get => _instance ?? "xAudit";
             set => _instance = value;
         }
-        public IDictionary<string, string[]> Tables { get; set; }
+        public AuditTableCollection Tables { get; set; }
        
     }
 }

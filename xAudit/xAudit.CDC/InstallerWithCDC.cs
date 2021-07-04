@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
+using xAudit.CDC.Exceptions;
 using xAudit.Infrastructure.Driver;
 
 namespace xAudit.CDC
@@ -20,6 +21,7 @@ namespace xAudit.CDC
         }
         public async Task InstallAsync(string DbSchema)
         {
+            await this.IsAgentRunning();
             using (var transaction = new TransactionScope(TransactionScopeOption.Required,
                                                           new TransactionOptions() { IsolationLevel = IsolationLevel.ReadCommitted },
                                                           TransactionScopeAsyncFlowOption.Enabled))
@@ -35,6 +37,7 @@ namespace xAudit.CDC
 
         public async Task UpgradeAsync(string DbSchema)
         {
+            await this.IsAgentRunning();
             string versionScriptPath = Path.Combine(Environment.CurrentDirectory, "Scripts", "Versions");
             var cleanupScriptPath = Path.Combine(Environment.CurrentDirectory, "Scripts", "cleanup.sql");
             if (File.Exists(versionScriptPath + "\\" + _currentVersion + ".sql"))
@@ -53,7 +56,7 @@ namespace xAudit.CDC
                 //execute cleanup query. Delete all SP, UDF etc belongs to current version
                 StringBuilder query = new StringBuilder(File.ReadAllText(cleanupScriptPath, Encoding.UTF8));
                 query = query.Replace("xAudit", DbSchema);
-                await _sqlServerDriver.ExecuteTextAsync(query.ToString(),null);
+                await _sqlServerDriver.ExecuteTextAsync(query.ToString(), null);
 
                 //execute current version scripts. Create all SP, UDF etc belongs to current version
                 query = query.Clear();
@@ -63,17 +66,20 @@ namespace xAudit.CDC
             }
         }
 
-        public async Task<bool> IsAgentRunning()
+        async Task IsAgentRunning()
         {
             string query = @"SELECT dss.[status] FROM   sys.dm_server_services dss
                                             WHERE  dss.[servicename] LIKE N'SQL Server Agent (%';";
 
             var status = await _sqlServerDriver.ExecuteTextScalarAsync(query, null);
-            return Convert.ToInt32(status) == 4;
+            if( Convert.ToInt32(status) != 4)
+            {
+                throw new SqlSeverAgentNotFoundException("xAudit needs Sql Sever Agent to be running");
+            }
         }
         public async Task<bool> EnableCDC(string DbSchema)
-        {           
-            await _sqlServerDriver.ExecuteNonQueryAsync(DbSchema+".Enable_CDC_On_DB", null);
+        {
+            await _sqlServerDriver.ExecuteNonQueryAsync(DbSchema + ".Enable_CDC_On_DB", null);
             return true;
         }
         public Task UninstallAsync()

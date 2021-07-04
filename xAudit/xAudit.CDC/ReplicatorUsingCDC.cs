@@ -79,10 +79,7 @@ namespace xAudit.CDC
         private async Task Install()
         {
             var installer = new InstallerWithCDC(this.CurrentVersion, this._sqlServerDriver);
-            if (!await installer.IsAgentRunning())
-            {
-                throw new SqlSeverAgentNotFoundException("xAudit needs Sql Sever Agent to be running");
-            }
+
             await installer.InstallAsync(this._options.InstanceName);
             await installer.UpgradeAsync(this._options.InstanceName);           
             await installer.EnableCDC(this._options.InstanceName);

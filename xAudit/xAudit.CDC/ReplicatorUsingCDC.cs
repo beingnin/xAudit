@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
 using System.Threading.Tasks;
-using xAudit.CDC.Exceptions;
 using xAudit.Contracts;
 using xAudit.Infrastructure.Driver;
 
@@ -61,6 +58,8 @@ namespace xAudit.CDC
                 default:
                     break;
             }
+
+            await this.EnableCDC(this._options.InstanceName);
         }
 
         public void Stop(bool backupBeforeDisabling = true, bool cleanSource = true)
@@ -81,8 +80,13 @@ namespace xAudit.CDC
             var installer = new InstallerWithCDC(this.CurrentVersion, this._sqlServerDriver);
 
             await installer.InstallAsync(this._options.InstanceName);
-            await installer.UpgradeAsync(this._options.InstanceName);           
-            await installer.EnableCDC(this._options.InstanceName);
+            await installer.UpgradeAsync(this._options.InstanceName);         
+            
+        }
+        private async Task<bool> EnableCDC(string DbSchema)
+        {
+            await _sqlServerDriver.ExecuteNonQueryAsync(DbSchema + ".Enable_CDC_On_DB", null);
+            return true;
         }
         private async Task<WhatNext> WhatToDoNextAsync()
         {

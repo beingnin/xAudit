@@ -77,11 +77,7 @@ namespace xAudit.CDC
                 throw new SqlSeverAgentNotFoundException("xAudit needs Sql Sever Agent to be running");
             }
         }
-        public async Task<bool> EnableCDC(string DbSchema)
-        {
-            await _sqlServerDriver.ExecuteNonQueryAsync(DbSchema + ".Enable_CDC_On_DB", null);
-            return true;
-        }
+
         public Task UninstallAsync()
         {
             return null;

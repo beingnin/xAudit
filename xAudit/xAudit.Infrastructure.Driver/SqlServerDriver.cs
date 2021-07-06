@@ -28,12 +28,13 @@ namespace xAudit.Infrastructure.Driver
                 {
                     cmd.CommandText = procedure;
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddRange(parameters);
+                    if(parameters!=null)
+                        cmd.Parameters.AddRange(parameters);
                     cmd.Connection = _SourceConnection;
                     using (SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(cmd))
                     {
                         await OpenAsync(cancellationToken);
-                        DataSet ds = null;
+                        DataSet ds = new DataSet();
                         sqlDataAdapter.Fill(ds);
                         return ds;
                     }

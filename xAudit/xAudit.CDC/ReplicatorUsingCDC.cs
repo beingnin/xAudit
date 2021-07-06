@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Linq;
 using xAudit.Contracts;
 using xAudit.Infrastructure.Driver;
+using System.Collections.Generic;
+using System.Data;
+using xAudit.CDC.Extensions;
 
 namespace xAudit.CDC
 {
@@ -13,7 +17,7 @@ namespace xAudit.CDC
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public Version CurrentVersion => "1.1.0";
+        public Version CurrentVersion => "1.1.1";
         private ReplicatorUsingCDC()
         {
         }
@@ -62,7 +66,7 @@ namespace xAudit.CDC
             }
 
             await this.EnableCDC(this._options.InstanceName);
-            var failedList=await this.EnableCDC(this._options.InstanceName,_options);
+            var failedList = await this.EnableCDC(this._options.InstanceName, _options);
         }
 
         public void Stop(bool backupBeforeDisabling = true, bool cleanSource = true)
@@ -100,9 +104,43 @@ namespace xAudit.CDC
         /// </summary>
         /// <param name="tables">The list of tables under appropriate schema names</param>
         /// <returns>Return the list of tables which got failed to be enabled for cdc</returns>
-        private async Task<AuditTableCollection> EnableCDC(string dbSchemaName,CDCReplicatorOptions option)
+        private async Task<AuditTableCollection> EnableCDC(string dbSchemaName, CDCReplicatorOptions option)
         {
-            return null;
+            var ds = await _sqlServerDriver.GetDataSetAsync(dbSchemaName + ".GET_TRACKED_TABLES", null);
+            if (ds == null)
+                return option.Tables;
+
+            HashSet<string> changedInstances = null;
+            HashSet<string> newInstances = null;
+            if (option.TrackSchemaChanges)
+            {
+                var changeDetailsDt = ds.Tables[0];
+                if (changeDetailsDt != null && changeDetailsDt.Rows.Count > 0)
+                {
+                    changedInstances = new HashSet<string>();
+                    Console.WriteLine("\nThe following tables have changed since the last run");
+                    Console.WriteLine("---------------------------------------------------------");
+                    foreach (DataRow row in changeDetailsDt.Rows)
+                    {
+                        var ins = Convert.ToString(row["CAPTURE_INSTANCE"]);
+                        changedInstances.Add(ins);
+                        log(ins, Convert.ToString(row["COLUMN_NAME"]), Convert.ToChar(row["CHANGE"]));
+                    }
+                }
+            }
+            return option.Tables;
+
+            //local functions
+
+            void log(string instance, string column, char change)
+            {
+                var details = instance.SplitInstance();
+                Console.ForegroundColor = change == '-' ? ConsoleColor.Red : ConsoleColor.Green;
+                Console.Write($"[{change}]");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine($"{details.Item1}.{details.Item2} --> {column}");
+                Console.ResetColor();
+            }
         }
         private async Task<WhatNext> WhatToDoNextAsync()
         {

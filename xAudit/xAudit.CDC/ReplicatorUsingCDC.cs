@@ -6,6 +6,7 @@ using xAudit.Infrastructure.Driver;
 using System.Collections.Generic;
 using System.Data;
 using xAudit.CDC.Extensions;
+using xAudit.CDC.Helpers;
 
 namespace xAudit.CDC
 {
@@ -110,24 +111,35 @@ namespace xAudit.CDC
             if (ds == null)
                 return option.Tables;
 
-            HashSet<string> changedInstances = null;
-            HashSet<string> newInstances = null;
+            HashSet<string> recreatableInstances = null;
+            HashSet<string> activeInstances = null;
+
             if (option.TrackSchemaChanges)
             {
-                var changeDetailsDt = ds.Tables[0];
-                if (changeDetailsDt != null && changeDetailsDt.Rows.Count > 0)
+                if (ds.Tables[0] != null)
                 {
-                    changedInstances = new HashSet<string>();
+                    recreatableInstances = new HashSet<string>();
                     Console.WriteLine("\nThe following tables have changed since the last run");
                     Console.WriteLine("---------------------------------------------------------");
-                    foreach (DataRow row in changeDetailsDt.Rows)
+                    foreach (DataRow row in ds.Tables[0].Rows)
                     {
                         var ins = Convert.ToString(row["CAPTURE_INSTANCE"]);
-                        changedInstances.Add(ins);
+                        recreatableInstances.Add(ins);
                         log(ins, Convert.ToString(row["COLUMN_NAME"]), Convert.ToChar(row["CHANGE"]));
                     }
                 }
             }
+            if(ds.Tables[1]!=null)
+            {
+                activeInstances = new HashSet<string>();
+                foreach (DataRow row in ds.Tables[1].Rows)
+                {
+                    var ins = Convert.ToString(row["CAPTURE_INSTANCE"]);
+                    activeInstances.Add(ins);
+                }
+            }
+
+
             return option.Tables;
 
             //local functions

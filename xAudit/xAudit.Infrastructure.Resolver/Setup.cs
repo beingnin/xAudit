@@ -1,8 +1,6 @@
 ﻿using System;
 using xAudit.Contracts;
 using xAudit.CDC;
-using System.Collections.Generic;
-using xAudit.Primitives;
 
 namespace xAudit.Infrastructure.Resolver
 {

@@ -13,7 +13,7 @@ namespace xAudit.CDC
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public Version CurrentVersion => "1.0.5";
+        public Version CurrentVersion => "1.1.0";
         private ReplicatorUsingCDC()
         {
         }
@@ -62,6 +62,7 @@ namespace xAudit.CDC
             }
 
             await this.EnableCDC(this._options.InstanceName);
+            var failedList=await this.EnableCDC(this._options.InstanceName,_options);
         }
 
         public void Stop(bool backupBeforeDisabling = true, bool cleanSource = true)
@@ -93,6 +94,15 @@ namespace xAudit.CDC
         {
             await _sqlServerDriver.ExecuteNonQueryAsync(DbSchema + ".Enable_CDC_On_DB", null);
             return true;
+        }
+        /// <summary>
+        /// Will try to enable cdc on the given tables if not already enabled
+        /// </summary>
+        /// <param name="tables">The list of tables under appropriate schema names</param>
+        /// <returns>Return the list of tables which got failed to be enabled for cdc</returns>
+        private async Task<AuditTableCollection> EnableCDC(string dbSchemaName,CDCReplicatorOptions option)
+        {
+            return null;
         }
         private async Task<WhatNext> WhatToDoNextAsync()
         {

@@ -6,7 +6,6 @@ namespace xAudit.Client.Console.FW
     using System.Threading.Tasks;
     using xAudit.Contracts;
     using xAudit.Infrastructure.Resolver;
-    using xAudit.Primitives;
 
     class Program
     {

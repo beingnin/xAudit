@@ -114,7 +114,7 @@ namespace xAudit.CDC
 
             HashSet<string> recreatableInstances = null;
             HashSet<string> activeInstances = null;
-
+            HashSet<string> inputTables = AuditTableCollectionHelper.ToHashSet(option.Tables);
             if (option.TrackSchemaChanges)
             {
                 if (ds.Tables[0] != null)
@@ -124,9 +124,10 @@ namespace xAudit.CDC
                     Console.WriteLine("---------------------------------------------------------");
                     foreach (DataRow row in ds.Tables[0].Rows)
                     {
-                        var ins = Convert.ToString(row["CAPTURE_INSTANCE"]);
-                        recreatableInstances.Add(ins);
-                        log(ins, Convert.ToString(row["COLUMN_NAME"]), Convert.ToChar(row["CHANGE"]));
+                        var ins = Convert.ToString(row["CAPTURE_INSTANCE"]).SplitInstance();
+                        var tableName = ins.Item1 + "." + ins.Item2;
+                        recreatableInstances.Add(tableName);
+                        log(tableName, Convert.ToString(row["COLUMN_NAME"]), Convert.ToChar(row["CHANGE"]));
                     }
                 }
             }
@@ -135,8 +136,9 @@ namespace xAudit.CDC
                 activeInstances = new HashSet<string>();
                 foreach (DataRow row in ds.Tables[1].Rows)
                 {
-                    var ins = Convert.ToString(row["CAPTURE_INSTANCE"]);
-                    activeInstances.Add(ins);
+                    var ins = Convert.ToString(row["CAPTURE_INSTANCE"]).SplitInstance();
+                    var tableName = ins.Item1 + "." + ins.Item2;
+                    activeInstances.Add(tableName);
                 }
             }
 
@@ -148,11 +150,10 @@ namespace xAudit.CDC
 
             void log(string instance, string column, char change)
             {
-                var details = instance.SplitInstance();
                 Console.ForegroundColor = change == '-' ? ConsoleColor.Red : ConsoleColor.Green;
                 Console.Write($"[{change}]");
                 Console.ForegroundColor = ConsoleColor.Gray;
-                Console.WriteLine($"{details.Item1}.{details.Item2} --> {column}");
+                Console.WriteLine($"{instance}--> {column}");
                 Console.ResetColor();
             }
         }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Threading.Tasks;
 using xAudit.CDC.Extensions;
 using xAudit.Contracts;
@@ -18,7 +19,7 @@ namespace xAudit.CDC
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public Version CurrentVersion => "1.1.3";
+        public Version CurrentVersion => "1.1.5";
         private ReplicatorUsingCDC()
         {
         }
@@ -139,6 +140,7 @@ namespace xAudit.CDC
                 }
             }
 
+            await this.Enable(activeInstances,option.InstanceName);
 
             return option.Tables;
 
@@ -189,9 +191,15 @@ namespace xAudit.CDC
             dt.Columns.Add("table", typeof(string));
             var slColumn = dt.Columns["sl"];
             slColumn.AutoIncrement = true;
-            slColumn.AutoIncrementSeed = 1;
-            slColumn.AutoIncrementStep = 1;
-            dt.Rows.Add(tables);
+            slColumn.AutoIncrementSeed = slColumn.AutoIncrementStep = 1;
+            foreach (var t in tables)
+            {
+                var detail = t.Split('.');
+                DataRow r = dt.NewRow();
+                r["schema"] = detail[0];
+                r["table"] = detail[1];
+                dt.Rows.Add(r);
+            }
             IDbDataParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@tables",tables),

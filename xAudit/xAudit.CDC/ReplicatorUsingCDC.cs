@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Threading.Tasks;
-using System.Linq;
-using xAudit.Contracts;
-using xAudit.Infrastructure.Driver;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 using xAudit.CDC.Extensions;
-using xAudit.CDC.Helpers;
+using xAudit.Contracts;
+using xAudit.Infrastructure.Driver;
 
 namespace xAudit.CDC
 {
@@ -67,7 +65,7 @@ namespace xAudit.CDC
             }
 
             await this.EnableCDC(this._options.InstanceName);
-            var failedList = await this.EnableCDC(this._options.InstanceName, _options);
+            var failedList = await this.CheckAndApplyOnTables(this._options.InstanceName, _options);
         }
 
         public void Stop(bool backupBeforeDisabling = true, bool cleanSource = true)
@@ -105,7 +103,7 @@ namespace xAudit.CDC
         /// </summary>
         /// <param name="tables">The list of tables under appropriate schema names</param>
         /// <returns>Return the list of tables which got failed to be enabled for cdc</returns>
-        private async Task<AuditTableCollection> EnableCDC(string dbSchemaName, CDCReplicatorOptions option)
+        private async Task<AuditTableCollection> CheckAndApplyOnTables(string dbSchemaName, CDCReplicatorOptions option)
         {
             var ds = await _sqlServerDriver.GetDataSetAsync(dbSchemaName + ".GET_TRACKED_TABLES", null);
             if (ds == null)

@@ -1,8 +1,7 @@
 ﻿using System;
-using xAudit.Contracts;
 using xAudit.CDC;
 
-namespace xAudit.Infrastructure.Resolver
+namespace xAudit
 {
     public class Setup
     {

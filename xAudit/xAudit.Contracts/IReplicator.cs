@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace xAudit.Contracts
+namespace xAudit
 {
     public interface IReplicator
     {

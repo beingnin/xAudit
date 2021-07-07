@@ -3,8 +3,7 @@ namespace xAudit.Clients.Console.Core
 {
     using System;
     using System.Threading.Tasks;
-    using xAudit.Contracts;
-    using xAudit.Infrastructure.Resolver;
+    using xAudit;
 
     class Program
     {

@@ -18,7 +18,7 @@ namespace xAudit.CDC
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public Version CurrentVersion => "1.1.1";
+        public Version CurrentVersion => "1.1.3";
         private ReplicatorUsingCDC()
         {
         }
@@ -184,9 +184,10 @@ namespace xAudit.CDC
                 return Task.FromResult(0);
 
             var dt = new DataTable();
+            dt.Columns.Add("sl", typeof(int));
             dt.Columns.Add("schema", typeof(string));
             dt.Columns.Add("table", typeof(string));
-
+            dt.Rows.Add(tables);
             IDbDataParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@tables",tables),
@@ -202,8 +203,10 @@ namespace xAudit.CDC
                 return Task.FromResult(0);
 
             var dt = new DataTable();
+            dt.Columns.Add("sl", typeof(int));
             dt.Columns.Add("schema", typeof(string));
             dt.Columns.Add("table", typeof(string));
+            dt.Rows.Add(tables);
 
             IDbDataParameter[] parameters = new SqlParameter[]
             {
@@ -219,8 +222,10 @@ namespace xAudit.CDC
                 return Task.FromResult(0);
 
             var dt = new DataTable();
+            dt.Columns.Add("sl", typeof(int));
             dt.Columns.Add("schema", typeof(string));
             dt.Columns.Add("table", typeof(string));
+            dt.Rows.Add(tables);
 
             IDbDataParameter[] parameters = new SqlParameter[]
             {

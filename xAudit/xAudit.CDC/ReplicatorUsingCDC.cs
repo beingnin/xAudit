@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 using xAudit.CDC.Extensions;
 using xAudit.Contracts;
@@ -127,7 +129,7 @@ namespace xAudit.CDC
                     }
                 }
             }
-            if(ds.Tables[1]!=null)
+            if (ds.Tables[1] != null)
             {
                 activeInstances = new HashSet<string>();
                 foreach (DataRow row in ds.Tables[1].Rows)
@@ -176,6 +178,58 @@ namespace xAudit.CDC
                 return WhatNext.NoUpdate;
         }
 
+        private Task<int> Enable(HashSet<string> tables, string instance)
+        {
+            if (tables == null)
+                return 0;
+
+            var dt = new DataTable();
+            dt.Columns.Add("schema", typeof(string));
+            dt.Columns.Add("table", typeof(string));
+
+            IDbDataParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@tables",tables),
+                new SqlParameter("@instancePrefix",instance)
+            };
+
+            return _sqlServerDriver.ExecuteNonQueryAsync("", parameters);
+
+        }
+        private Task<int> Reenable(HashSet<string> tables, string instance)
+        {
+            if (tables == null)
+                return 0;
+
+            var dt = new DataTable();
+            dt.Columns.Add("schema", typeof(string));
+            dt.Columns.Add("table", typeof(string));
+
+            IDbDataParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@tables",tables),
+                new SqlParameter("@instancePrefix",instance)
+            };
+
+            return _sqlServerDriver.ExecuteNonQueryAsync("", parameters);
+        }
+        private Task<int> Disable(HashSet<string> tables, string instance)
+        {
+            if (tables == null)
+                return 0;
+
+            var dt = new DataTable();
+            dt.Columns.Add("schema", typeof(string));
+            dt.Columns.Add("table", typeof(string));
+
+            IDbDataParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@tables",tables),
+                new SqlParameter("@instancePrefix",instance)
+            };
+
+            return _sqlServerDriver.ExecuteNonQueryAsync("", parameters);
+        }
         #endregion
     }
 }

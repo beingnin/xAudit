@@ -66,7 +66,7 @@ namespace xAudit.CDC
                     break;
             }
 
-            await this.EnableCDC(this._options.InstanceName);
+            await this.EnableOndB(this._options.InstanceName);
             var failedList = await this.CheckAndApplyOnTables(this._options.InstanceName, _options);
         }
 
@@ -95,7 +95,7 @@ namespace xAudit.CDC
             var installer = new InstallerWithCDC(this.CurrentVersion, this._sqlServerDriver);
             return installer.UpgradeAsync(this._options.InstanceName, this._options);
         }
-        private async Task<bool> EnableCDC(string DbSchema)
+        private async Task<bool> EnableOndB(string DbSchema)
         {
             await _sqlServerDriver.ExecuteNonQueryAsync(DbSchema + ".Enable_CDC_On_DB", null);
             return true;
@@ -187,6 +187,10 @@ namespace xAudit.CDC
             dt.Columns.Add("sl", typeof(int));
             dt.Columns.Add("schema", typeof(string));
             dt.Columns.Add("table", typeof(string));
+            var slColumn = dt.Columns["sl"];
+            slColumn.AutoIncrement = true;
+            slColumn.AutoIncrementSeed = 1;
+            slColumn.AutoIncrementStep = 1;
             dt.Rows.Add(tables);
             IDbDataParameter[] parameters = new SqlParameter[]
             {
@@ -206,6 +210,10 @@ namespace xAudit.CDC
             dt.Columns.Add("sl", typeof(int));
             dt.Columns.Add("schema", typeof(string));
             dt.Columns.Add("table", typeof(string));
+            var slColumn = dt.Columns["sl"];
+            slColumn.AutoIncrement = true;
+            slColumn.AutoIncrementSeed = 1;
+            slColumn.AutoIncrementStep = 1;
             dt.Rows.Add(tables);
 
             IDbDataParameter[] parameters = new SqlParameter[]
@@ -225,6 +233,10 @@ namespace xAudit.CDC
             dt.Columns.Add("sl", typeof(int));
             dt.Columns.Add("schema", typeof(string));
             dt.Columns.Add("table", typeof(string));
+            var slColumn = dt.Columns["sl"];
+            slColumn.AutoIncrement = true;
+            slColumn.AutoIncrementSeed = 1;
+            slColumn.AutoIncrementStep = 1;
             dt.Rows.Add(tables);
 
             IDbDataParameter[] parameters = new SqlParameter[]

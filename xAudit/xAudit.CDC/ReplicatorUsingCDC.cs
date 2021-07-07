@@ -181,7 +181,7 @@ namespace xAudit.CDC
         private Task<int> Enable(HashSet<string> tables, string instance)
         {
             if (tables == null)
-                return 0;
+                return Task.FromResult(0);
 
             var dt = new DataTable();
             dt.Columns.Add("schema", typeof(string));
@@ -199,7 +199,7 @@ namespace xAudit.CDC
         private Task<int> Reenable(HashSet<string> tables, string instance)
         {
             if (tables == null)
-                return 0;
+                return Task.FromResult(0);
 
             var dt = new DataTable();
             dt.Columns.Add("schema", typeof(string));
@@ -216,7 +216,7 @@ namespace xAudit.CDC
         private Task<int> Disable(HashSet<string> tables, string instance)
         {
             if (tables == null)
-                return 0;
+                return Task.FromResult(0);
 
             var dt = new DataTable();
             dt.Columns.Add("schema", typeof(string));

@@ -6,6 +6,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using xAudit.CDC.Extensions;
+using xAudit.CDC.Helpers;
 using xAudit.Contracts;
 using xAudit.Infrastructure.Driver;
 
@@ -142,7 +143,6 @@ namespace xAudit.CDC
                 }
             }
 
-            await this.Enable(activeInstances,option.InstanceName);
 
             return option.Tables;
 

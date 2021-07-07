@@ -19,7 +19,7 @@ namespace xAudit.CDC
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public Version CurrentVersion => "1.1.5";
+        public Version CurrentVersion => "1.1.14";
         private ReplicatorUsingCDC()
         {
         }
@@ -186,12 +186,8 @@ namespace xAudit.CDC
                 return Task.FromResult(0);
 
             var dt = new DataTable();
-            dt.Columns.Add("sl", typeof(int));
             dt.Columns.Add("schema", typeof(string));
             dt.Columns.Add("table", typeof(string));
-            var slColumn = dt.Columns["sl"];
-            slColumn.AutoIncrement = true;
-            slColumn.AutoIncrementSeed = slColumn.AutoIncrementStep = 1;
             foreach (var t in tables)
             {
                 var detail = t.Split('.');
@@ -215,15 +211,16 @@ namespace xAudit.CDC
                 return Task.FromResult(0);
 
             var dt = new DataTable();
-            dt.Columns.Add("sl", typeof(int));
             dt.Columns.Add("schema", typeof(string));
             dt.Columns.Add("table", typeof(string));
-            var slColumn = dt.Columns["sl"];
-            slColumn.AutoIncrement = true;
-            slColumn.AutoIncrementSeed = 1;
-            slColumn.AutoIncrementStep = 1;
-            dt.Rows.Add(tables);
-
+            foreach (var t in tables)
+            {
+                var detail = t.Split('.');
+                DataRow r = dt.NewRow();
+                r["schema"] = detail[0];
+                r["table"] = detail[1];
+                dt.Rows.Add(r);
+            }
             IDbDataParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@tables",tables),
@@ -238,15 +235,16 @@ namespace xAudit.CDC
                 return Task.FromResult(0);
 
             var dt = new DataTable();
-            dt.Columns.Add("sl", typeof(int));
             dt.Columns.Add("schema", typeof(string));
             dt.Columns.Add("table", typeof(string));
-            var slColumn = dt.Columns["sl"];
-            slColumn.AutoIncrement = true;
-            slColumn.AutoIncrementSeed = 1;
-            slColumn.AutoIncrementStep = 1;
-            dt.Rows.Add(tables);
-
+            foreach (var t in tables)
+            {
+                var detail = t.Split('.');
+                DataRow r = dt.NewRow();
+                r["schema"] = detail[0];
+                r["table"] = detail[1];
+                dt.Rows.Add(r);
+            }
             IDbDataParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@tables",tables),

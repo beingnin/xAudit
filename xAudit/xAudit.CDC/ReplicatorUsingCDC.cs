@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
-using System.Linq;
 using System.Threading.Tasks;
 using xAudit.CDC.Extensions;
 using xAudit.CDC.Helpers;
@@ -19,7 +17,7 @@ namespace xAudit.CDC
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public Version CurrentVersion => "1.1.15";
+        public Version CurrentVersion => "1.1.16";
         private ReplicatorUsingCDC()
         {
         }
@@ -202,7 +200,7 @@ namespace xAudit.CDC
                 new SqlParameter("@instancePrefix",instance)
             };
 
-            return _sqlServerDriver.ExecuteNonQueryAsync("", parameters);
+            return _sqlServerDriver.ExecuteNonQueryAsync(instance+ ".ENABLE_TABLES", parameters);
 
         }
         private Task<int> Reenable(HashSet<string> tables, string instance)
@@ -227,7 +225,7 @@ namespace xAudit.CDC
                 new SqlParameter("@instancePrefix",instance)
             };
 
-            return _sqlServerDriver.ExecuteNonQueryAsync("", parameters);
+            return _sqlServerDriver.ExecuteNonQueryAsync(instance + ".REENABLE_TABLES", parameters);
         }
         private Task<int> Disable(HashSet<string> tables, string instance)
         {
@@ -251,7 +249,7 @@ namespace xAudit.CDC
                 new SqlParameter("@instancePrefix",instance)
             };
 
-            return _sqlServerDriver.ExecuteNonQueryAsync("", parameters);
+            return _sqlServerDriver.ExecuteNonQueryAsync(instance + ".DISABLE_TABLES", parameters);
         }
         #endregion
     }

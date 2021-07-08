@@ -110,36 +110,40 @@ namespace xAudit.CDC
             if (ds == null)
                 return option.Tables;
 
-            HashSet<string> recreatableInstances = null;
-            HashSet<string> activeInstances = null;
+            HashSet<string> changedTables = null;
+            HashSet<string> activeTables = null;
             HashSet<string> inputTables = AuditTableCollectionHelper.ToHashSet(option.Tables);
             if (option.TrackSchemaChanges)
             {
                 if (ds.Tables[0] != null)
                 {
-                    recreatableInstances = new HashSet<string>();
+                    changedTables = new HashSet<string>();
                     Console.WriteLine("\nThe following tables have changed since the last run");
                     Console.WriteLine("---------------------------------------------------------");
                     foreach (DataRow row in ds.Tables[0].Rows)
                     {
                         var ins = Convert.ToString(row["CAPTURE_INSTANCE"]).SplitInstance();
                         var tableName = ins.Item1 + "." + ins.Item2;
-                        recreatableInstances.Add(tableName);
+                        changedTables.Add(tableName);
                         log(tableName, Convert.ToString(row["COLUMN_NAME"]), Convert.ToChar(row["CHANGE"]));
                     }
                 }
             }
             if (ds.Tables[1] != null)
             {
-                activeInstances = new HashSet<string>();
+                activeTables = new HashSet<string>();
                 foreach (DataRow row in ds.Tables[1].Rows)
                 {
                     var ins = Convert.ToString(row["CAPTURE_INSTANCE"]).SplitInstance();
                     var tableName = ins.Item1 + "." + ins.Item2;
-                    activeInstances.Add(tableName);
+                    activeTables.Add(tableName);
                 }
             }
 
+            this.SegregateTables(inputTables, activeTables, changedTables,out HashSet<string> recreate, out HashSet<string> disable, out HashSet<string> enable);
+            await this.Enable(enable, option.InstanceName);
+            await this.Disable(disable, option.InstanceName);
+            await this.Reenable(recreate, option.InstanceName);
 
             return option.Tables;
 
@@ -176,6 +180,16 @@ namespace xAudit.CDC
                 return WhatNext.Downgrade;
             else
                 return WhatNext.NoUpdate;
+        }
+
+        private void SegregateTables(HashSet<string> inputTables,HashSet<string> activeTables,HashSet<string> changedTables,out HashSet<string> recreate,out HashSet<string> disable, out HashSet<string> enable)
+        {
+            recreate = new HashSet<string>(inputTables);
+            disable = new HashSet<string>(activeTables);
+            enable = new HashSet<string>(inputTables);
+            recreate.IntersectWith(changedTables);
+            disable.ExceptWith(inputTables);
+            enable.ExceptWith(activeTables);            
         }
 
         private Task<int> Enable(HashSet<string> tables, string instance)

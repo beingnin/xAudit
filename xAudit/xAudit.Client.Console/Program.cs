@@ -19,16 +19,7 @@ namespace xAudit.Client.Console.FW
                         "groups"
                     }
                 },
-                {
-
-                    "ofc",new string[]
-                    {
-                        "mails",
-                        "senders",
-                        "priorities"
-
-                    }
-                }
+                
             };
 
             IReplicator replicator = new Setup(

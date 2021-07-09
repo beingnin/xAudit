@@ -17,7 +17,7 @@ namespace xAudit.CDC
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public Version CurrentVersion => "1.1.16";
+        public Version CurrentVersion => "1.1.20";
         private ReplicatorUsingCDC()
         {
         }
@@ -198,6 +198,11 @@ namespace xAudit.CDC
                 return Task.FromResult(0);
 
             var dt = new DataTable();
+           
+            DataColumn sl = new DataColumn("sl", typeof(int));
+            sl.AutoIncrement = true;
+            sl.AutoIncrementSeed = sl.AutoIncrementStep = 1;
+            dt.Columns.Add(sl);
             dt.Columns.Add("schema", typeof(string));
             dt.Columns.Add("table", typeof(string));
             foreach (var t in tables)
@@ -210,7 +215,7 @@ namespace xAudit.CDC
             }
             IDbDataParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@tables",tables),
+                new SqlParameter("@tables",dt),
                 new SqlParameter("@instancePrefix",instance)
             };
 
@@ -223,6 +228,11 @@ namespace xAudit.CDC
                 return Task.FromResult(0);
 
             var dt = new DataTable();
+
+            DataColumn sl = new DataColumn("sl", typeof(int));
+            sl.AutoIncrement = true;
+            sl.AutoIncrementSeed = sl.AutoIncrementStep = 1;
+            dt.Columns.Add(sl);
             dt.Columns.Add("schema", typeof(string));
             dt.Columns.Add("table", typeof(string));
             foreach (var t in tables)
@@ -235,7 +245,7 @@ namespace xAudit.CDC
             }
             IDbDataParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@tables",tables),
+                new SqlParameter("@tables",dt),
                 new SqlParameter("@instancePrefix",instance)
             };
 
@@ -247,6 +257,11 @@ namespace xAudit.CDC
                 return Task.FromResult(0);
 
             var dt = new DataTable();
+
+            DataColumn sl = new DataColumn("sl", typeof(int));
+            sl.AutoIncrement = true;
+            sl.AutoIncrementSeed = sl.AutoIncrementStep = 1;
+            dt.Columns.Add(sl);
             dt.Columns.Add("schema", typeof(string));
             dt.Columns.Add("table", typeof(string));
             foreach (var t in tables)
@@ -259,7 +274,7 @@ namespace xAudit.CDC
             }
             IDbDataParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@tables",tables),
+                new SqlParameter("@tables",dt),
                 new SqlParameter("@instancePrefix",instance)
             };
 

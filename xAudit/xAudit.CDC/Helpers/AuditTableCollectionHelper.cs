@@ -27,7 +27,7 @@ namespace xAudit.CDC.Helpers
             {
                 foreach (var table in schema.Value)
                 {
-                    result.Add(schema + "." + table);
+                    result.Add(schema.Key + "." + table);
                 }
             }
             return result;

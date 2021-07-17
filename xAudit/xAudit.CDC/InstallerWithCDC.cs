@@ -99,7 +99,8 @@ namespace xAudit.CDC
                  new SqlParameter("@TOTALTABLES",option.Tables==null?(object)DBNull.Value:option.Tables.Count),
                  new SqlParameter("@TRACKSCHEMACHANGES",option.TrackSchemaChanges),
                  new SqlParameter("@ENABLEPARTITION",option.EnablePartition),
-                 new SqlParameter("@KEEPVERSIONSFORPARTITION",option.KeepVersionsForPartition)
+                 new SqlParameter("@KEEPVERSIONSFORPARTITION",option.KeepVersionsForPartition),
+                 new SqlParameter("@INSTANCENAME",option.InstanceName),
             };
             await _sqlServerDriver.ExecuteNonQueryAsync(dbSchemaName + ".INSERT_NEW_VERSION", parameters);
             Console.WriteLine("version " + this._currentVersion + " installed");

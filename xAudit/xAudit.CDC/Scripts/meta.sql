@@ -1,6 +1,26 @@
 
 
 
+IF NOT EXISTS (SELECT 1 FROM SYS.FILEGROUPS WHERE [NAME]= 'xAudit_history_fg' AND [TYPE]='FG' AND IS_SYSTEM=0)
+BEGIN
+	EXEC('ALTER DATABASE #DBNAME# ADD FILEGROUP xAudit_history_fg');	
+	PRINT('CREATED FILE GROUP')
+END
+
+IF NOT EXISTS (SELECT 1 FROM SYS.DATABASE_FILES F JOIN SYS.FILEGROUPS FG ON FG.DATA_SPACE_ID = F.DATA_SPACE_ID WHERE FG.[NAME]='xAudit_history_fg' AND F.[NAME]='xAudit_history_data_file')
+BEGIN
+	EXEC('ALTER DATABASE #DBNAME# 
+		  ADD FILE 
+		  (
+		      NAME = xAudit_history_data_file,
+		      FILENAME = ''#DATAFILEPATH#'',
+		      SIZE = 5MB,
+		      MAXSIZE = 100MB,
+		      FILEGROWTH = 5MB
+		  ) TO FILEGROUP xAudit_history_fg'
+		);
+	PRINT('FILE CREATED')
+END
 
 IF NOT EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE [SCHEMA_NAME]='xAudit')
 BEGIN
@@ -15,7 +35,7 @@ BEGIN
 	(
 		[Version] VARCHAR(20) NOT NULL,
 		[Machine] VARCHAR(100) NOT NULL,
-		[INSTANCENAME] VARCHAR(100) NOT NULL,
+		[Instancename] VARCHAR(100) NOT NULL,
 		[Major] INT NOT NULL,
 		[Minor] INT NOT NULL,
 		[Patch] INT NOT NULL,
@@ -26,6 +46,6 @@ BEGIN
 		[TrackSchemaChanges] BIT DEFAULT 0,
 		[EnablePartition] BIT DEFAULT 0,
 		[KeepVersionsForPartition] BIT DEFAULT 0
-	);
+	) ON [xAudit_history_fg];
 END
 

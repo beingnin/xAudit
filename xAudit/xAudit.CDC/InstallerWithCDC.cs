@@ -22,27 +22,23 @@ namespace xAudit.CDC
             _currentVersion = version;
             _sqlServerDriver = sqlServerDriver;
         }
-        public async Task InstallAsync(string DbSchema)
+        public async Task InstallAsync(string DbSchema,string dataFileDirectory)
         {
             Console.WriteLine("Fresh installation started...");
             Console.WriteLine("Checking for sql server agent...");
             await this.IsAgentRunning();
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required,
-                                                          new TransactionOptions() { IsolationLevel = IsolationLevel.ReadCommitted },
-                                                          TransactionScopeAsyncFlowOption.Enabled))
-            {
-                string path = Path.Combine(Environment.CurrentDirectory, "Scripts", "meta.sql");
-                StringBuilder query = new StringBuilder(File.ReadAllText(path, Encoding.UTF8));
-                query = query.Replace("xAudit", DbSchema);
-                await _sqlServerDriver.ExecuteTextAsync(query.ToString(), null);
-                transaction.Complete();
-            }
+
+            //cannot use transaction since alter table commands are used multiple times in this script
+            string path = Path.Combine(Environment.CurrentDirectory, "Scripts", "meta.sql");
+            StringBuilder query = new StringBuilder(File.ReadAllText(path, Encoding.UTF8));
+            query = query.Replace("xAudit", DbSchema).Replace("#DBNAME#", _sqlServerDriver.DbName).Replace("#DATAFILEPATH#", dataFileDirectory+ @"\xAudit_history_data_file.ndf");
+            await _sqlServerDriver.ExecuteTextAsync(query.ToString(),null);
 
         }
 
-        public async Task UpgradeAsync(string DbSchema,CDCReplicatorOptions option)
+        public async Task UpgradeAsync(string DbSchema, CDCReplicatorOptions option)
         {
-            Console.WriteLine("Installing version "+_currentVersion+"...");
+            Console.WriteLine("Installing version " + _currentVersion + "...");
             await this.IsAgentRunning();
             string versionScriptPath = Path.Combine(Environment.CurrentDirectory, "Scripts", "Versions");
             var cleanupScriptPath = Path.Combine(Environment.CurrentDirectory, "Scripts", "cleanup.sql");
@@ -52,7 +48,7 @@ namespace xAudit.CDC
             {
                 Version previousVersion = _currentVersion.FindImmediatePrevious(Directory.GetFiles(versionScriptPath).Select(x => (Version)Path.GetFileNameWithoutExtension(x)).ToArray());
                 versionScriptPath = versionScriptPath + "\\" + previousVersion + ".sql";
-                Console.WriteLine("script  not found for current version. Instead executing previous version "+previousVersion);
+                Console.WriteLine("script  not found for current version. Instead executing previous version " + previousVersion);
             }
 
 
@@ -81,7 +77,7 @@ namespace xAudit.CDC
                                             WHERE  dss.[servicename] LIKE N'SQL Server Agent (%';";
 
             var status = await _sqlServerDriver.ExecuteTextScalarAsync(query, null);
-            if( Convert.ToInt32(status) != 4)
+            if (Convert.ToInt32(status) != 4)
             {
                 throw new SqlSeverAgentNotFoundException("xAudit needs Sql Sever Agent to be running");
             }

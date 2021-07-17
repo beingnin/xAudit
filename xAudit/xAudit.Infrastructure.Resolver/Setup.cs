@@ -12,6 +12,7 @@ namespace xAudit
         private Implementation _type;
         private string _sourceConnection = null;
         private string _instance = null;
+        private string _directory = null;
         private string _partitionConnection = null;
         private bool _trackSchemaChanges = false;
         private bool _enablePartition = true;
@@ -61,6 +62,11 @@ namespace xAudit
             _instance = instance;
             return this;
         }
+        public Setup Directory(string directoryPath)
+        {
+            _directory = directoryPath.TrimEnd('\\');
+            return this;
+        }
         public IReplicator GetReplicator()
         {
             switch (this._type)
@@ -73,6 +79,7 @@ namespace xAudit
                             EnablePartition = _enablePartition,
                             KeepVersionsForPartition = _keepVersionsForPartitions,
                             InstanceName = _instance,
+                            DataDirectory=_directory,
                             Tables = _tables
                         }
                         , _sourceConnection

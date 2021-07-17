@@ -28,6 +28,7 @@ namespace xAudit.Client.Console.FW
                                                .TrackSchemaChanges()
                                                .EnablePartition()
                                                .SetInstanceName("xAudit")
+                                               .Directory(@"C:\Program Files\Microsoft SQL Server\MSSQL13.SQL2016\MSSQL\DATA\")
                                                .Tables(tables)
                                                .GetReplicator();
             try

@@ -8,6 +8,7 @@ namespace xAudit.CDC
     {
         public bool TrackSchemaChanges { get; set; }
         public bool EnablePartition { get; set; }
+        public string DataDirectory { get; set; }
         public bool KeepVersionsForPartition { get; set; }
         private string _instance;
         public string InstanceName

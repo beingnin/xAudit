@@ -19,6 +19,7 @@ namespace xAudit.Infrastructure.Driver
             _SourceCon = sourceCon;
             _SourceConnection = new SqlConnection(_SourceCon);
         }
+        public string DbName { get => _SourceConnection.Database; }
 
         public async Task<DataSet> GetDataSetAsync(string procedure, IDataParameter[] parameters, CancellationToken cancellationToken = default(CancellationToken))
         {

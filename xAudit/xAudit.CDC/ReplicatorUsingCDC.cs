@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using System.Transactions;
 using xAudit.CDC.Extensions;
 using xAudit.CDC.Helpers;
 using xAudit.Infrastructure.Driver;
@@ -85,7 +86,7 @@ namespace xAudit.CDC
         {
 
             var installer = new InstallerWithCDC(this.CurrentVersion, this._sqlServerDriver);
-            await installer.InstallAsync(this._options.InstanceName,this._options.DataDirectory);
+            await installer.InstallAsync(this._options.InstanceName, this._options.DataDirectory);
             await installer.UpgradeAsync(this._options.InstanceName, this._options);
 
         }
@@ -140,7 +141,7 @@ namespace xAudit.CDC
                 }
             }
 
-            this.SegregateTables(inputTables, activeTables, changedTables,out HashSet<string> recreate, out HashSet<string> disable, out HashSet<string> enable);
+            this.SegregateTables(inputTables, activeTables, changedTables, out HashSet<string> recreate, out HashSet<string> disable, out HashSet<string> enable);
             await this.Enable(enable, option.InstanceName);
             await this.Disable(disable, option.InstanceName);
             await this.Reenable(recreate, option.InstanceName);
@@ -182,50 +183,20 @@ namespace xAudit.CDC
                 return WhatNext.NoUpdate;
         }
 
-        private void SegregateTables(HashSet<string> inputTables,HashSet<string> activeTables,HashSet<string> changedTables,out HashSet<string> recreate,out HashSet<string> disable, out HashSet<string> enable)
+        private void SegregateTables(HashSet<string> inputTables, HashSet<string> activeTables, HashSet<string> changedTables, out HashSet<string> recreate, out HashSet<string> disable, out HashSet<string> enable)
         {
             recreate = new HashSet<string>(inputTables);
             disable = new HashSet<string>(activeTables);
             enable = new HashSet<string>(inputTables);
             recreate.IntersectWith(changedTables);
             disable.ExceptWith(inputTables);
-            enable.ExceptWith(activeTables);            
+            enable.ExceptWith(activeTables);
         }
 
-        private Task<int> Enable(HashSet<string> tables, string instance)
+        private async Task<int> Enable(HashSet<string> tables, string instance)
         {
             if (tables == null)
-                return Task.FromResult(0);
-
-            var dt = new DataTable();
-           
-            DataColumn sl = new DataColumn("sl", typeof(int));
-            sl.AutoIncrement = true;
-            sl.AutoIncrementSeed = sl.AutoIncrementStep = 1;
-            dt.Columns.Add(sl);
-            dt.Columns.Add("schema", typeof(string));
-            dt.Columns.Add("table", typeof(string));
-            foreach (var t in tables)
-            {
-                var detail = t.Split('.');
-                DataRow r = dt.NewRow();
-                r["schema"] = detail[0];
-                r["table"] = detail[1];
-                dt.Rows.Add(r);
-            }
-            IDbDataParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@tables",dt),
-                new SqlParameter("@instancePrefix",instance)
-            };
-
-            return _sqlServerDriver.ExecuteNonQueryAsync(instance+ ".ENABLE_TABLES", parameters);
-
-        }
-        private Task<int> Reenable(HashSet<string> tables, string instance)
-        {
-            if (tables == null)
-                return Task.FromResult(0);
+                return 0;
 
             var dt = new DataTable();
 
@@ -248,13 +219,20 @@ namespace xAudit.CDC
                 new SqlParameter("@tables",dt),
                 new SqlParameter("@instancePrefix",instance)
             };
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required,
+                                                     new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted },
+                                                     TransactionScopeAsyncFlowOption.Enabled))
+            {
+                var result = await _sqlServerDriver.ExecuteNonQueryAsync(instance + ".ENABLE_TABLES", parameters);
+                transaction.Complete();
+                return result;
+            }
 
-            return _sqlServerDriver.ExecuteNonQueryAsync(instance + ".REENABLE_TABLES", parameters);
         }
-        private Task<int> Disable(HashSet<string> tables, string instance)
+        private async Task<int> Reenable(HashSet<string> tables, string instance)
         {
             if (tables == null)
-                return Task.FromResult(0);
+                return 0;
 
             var dt = new DataTable();
 
@@ -277,8 +255,48 @@ namespace xAudit.CDC
                 new SqlParameter("@tables",dt),
                 new SqlParameter("@instancePrefix",instance)
             };
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required,
+                                                    new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted },
+                                                    TransactionScopeAsyncFlowOption.Enabled))
+            {
+                var result = await _sqlServerDriver.ExecuteNonQueryAsync(instance + ".REENABLE_TABLES", parameters);
+                transaction.Complete();
+                return result;
+            }
+        }
+        private async Task<int> Disable(HashSet<string> tables, string instance)
+        {
+            if (tables == null)
+                return 0;
 
-            return _sqlServerDriver.ExecuteNonQueryAsync(instance + ".DISABLE_TABLES", parameters);
+            var dt = new DataTable();
+
+            DataColumn sl = new DataColumn("sl", typeof(int));
+            sl.AutoIncrement = true;
+            sl.AutoIncrementSeed = sl.AutoIncrementStep = 1;
+            dt.Columns.Add(sl);
+            dt.Columns.Add("schema", typeof(string));
+            dt.Columns.Add("table", typeof(string));
+            foreach (var t in tables)
+            {
+                var detail = t.Split('.');
+                DataRow r = dt.NewRow();
+                r["schema"] = detail[0];
+                r["table"] = detail[1];
+                dt.Rows.Add(r);
+            }
+            IDbDataParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@tables",dt),
+                new SqlParameter("@instancePrefix",instance)
+            };
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required,
+                                                    new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted },
+                                                    TransactionScopeAsyncFlowOption.Enabled))
+            {
+                var result = await _sqlServerDriver.ExecuteNonQueryAsync(instance + ".DISABLE_TABLES", parameters);
+                return result;
+            }
         }
         #endregion
     }

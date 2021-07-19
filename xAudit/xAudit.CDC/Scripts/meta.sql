@@ -1,22 +1,22 @@
 
 
 
-IF NOT EXISTS (SELECT 1 FROM SYS.FILEGROUPS WHERE [NAME]= 'xAudit_history_fg' AND [TYPE]='FG')
+IF NOT EXISTS (SELECT 1 FROM SYS.FILEGROUPS WHERE [NAME]= 'x_Audit_history_fg' AND [TYPE]='FG')
 BEGIN
-	EXEC('ALTER DATABASE #DBNAME# ADD FILEGROUP xAudit_history_fg');	
+	EXEC('ALTER DATABASE #DBNAME# ADD FILEGROUP x_Audit_history_fg');	
 END
 
-IF NOT EXISTS (SELECT 1 FROM SYS.DATABASE_FILES F JOIN SYS.FILEGROUPS FG ON FG.DATA_SPACE_ID = F.DATA_SPACE_ID WHERE FG.[NAME]='xAudit_history_fg' AND F.[NAME]='xAudit_history_data_file')
+IF NOT EXISTS (SELECT 1 FROM SYS.DATABASE_FILES F JOIN SYS.FILEGROUPS FG ON FG.DATA_SPACE_ID = F.DATA_SPACE_ID WHERE FG.[NAME]='x_Audit_history_fg' AND F.[NAME]='x_Audit_history_data_file')
 BEGIN
 	EXEC('ALTER DATABASE #DBNAME# 
 		  ADD FILE 
 		  (
-		      NAME = xAudit_history_data_file,
+		      NAME = x_Audit_history_data_file,
 		      FILENAME = ''#DATAFILEPATH#'',
 		      SIZE = 5MB,
 		      MAXSIZE = 100MB,
 		      FILEGROWTH = 5MB
-		  ) TO FILEGROUP xAudit_history_fg'
+		  ) TO FILEGROUP x_Audit_history_fg'
 		);
 END
 
@@ -44,7 +44,7 @@ BEGIN
 		[TrackSchemaChanges] BIT DEFAULT 0,
 		[EnablePartition] BIT DEFAULT 0,
 		[KeepVersionsForPartition] BIT DEFAULT 0
-	) ON [xAudit_history_fg];
+	) ON [x_Audit_history_fg];
 END
 
 IF NOT EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='xAudit' AND TABLE_NAME='META_TABLES')
@@ -60,5 +60,5 @@ BEGIN
 		[ARCHIVE_TABLE] NVARCHAR(500)  NULL,
 		[CURRENT_SOURCE_VERSION] SMALLINT NOT NULL,
 		[IS_RUNNING] BIT NOT NULL
-	)ON [xAudit_history_fg]
+	)ON [x_Audit_history_fg]
 END

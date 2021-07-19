@@ -194,7 +194,7 @@ BEGIN
 			@SOURCE_NAME   = @TABLE_NAME,
 			@ROLE_NAME     = NULL,
 			@CAPTURE_INSTANCE = @INSTANCE_NAME,
-			@FILEGROUP_NAME = 'xAudit_history_fg'
+			@FILEGROUP_NAME = 'x_Audit_history_fg'
 
 		EXEC xAudit.INSERT_NEW_TABLE_VERSION
 			@SOURCE_SCHEMA=@SCHEMA_NAME,
@@ -273,7 +273,7 @@ BEGIN
 			@SOURCE_NAME   = @TABLE_NAME,
 			@ROLE_NAME     = NULL,
 			@CAPTURE_INSTANCE = @INSTANCE_NAME,
-			@FILEGROUP_NAME = 'xAudit_history_fg'
+			@FILEGROUP_NAME = 'x_Audit_history_fg'
 		END
 		SET @CURSOR=@CURSOR-1;
 	END

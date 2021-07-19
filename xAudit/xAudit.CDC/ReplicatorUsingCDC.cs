@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using xAudit.CDC.Extensions;
 using xAudit.CDC.Helpers;
+using xAudit.Contracts;
 using xAudit.Infrastructure.Driver;
 
 namespace xAudit.CDC
@@ -233,6 +234,12 @@ namespace xAudit.CDC
         {
             if (tables == null)
                 return 0;
+
+            if(this._options.TrackSchemaChanges)
+            {
+                IArchiver archiver = new ArchiverWithCDC();
+                var archiveFailedList = await archiver.Archive(tables,instance);
+            }
 
             var dt = new DataTable();
 

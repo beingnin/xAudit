@@ -232,13 +232,13 @@ namespace xAudit.CDC
         }
         private async Task<int> Reenable(HashSet<string> tables, string instance)
         {
-            if (tables == null)
+            if (tables == null || tables.Count==0)
                 return 0;
 
-            if(this._options.TrackSchemaChanges)
+            if (this._options.TrackSchemaChanges)
             {
-                IArchiver archiver = new ArchiverWithCDC();
-                var archiveFailedList = await archiver.Archive(tables,instance);
+                IArchiver archiver = new ArchiverWithCDC(this._sqlServerDriver);
+                var archiveFailedList = await archiver.Archive(tables, instance);
             }
 
             var dt = new DataTable();

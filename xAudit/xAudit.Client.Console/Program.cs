@@ -15,16 +15,21 @@ namespace xAudit.Client.Console.FW
                 { 
                     "dbo",new string[]
                     {
-                        "products",
-                        "groups"
+                        "customers",
+                        "products"
+                    }
+                },
+                {
+                    "sales",new string[]
+                    {
+                        "orders",
+                        "details"
                     }
                 },
 
             };
 
-            IReplicator replicator = new Setup(@"Data Source=10.10.100.68\SQL2016;Initial Catalog=learns;User ID=spsauser;Password=$P$@789#",
-                                               @"Data Source=10.10.100.68\SQL2016;Initial Catalog=learns;User ID=spsauser;Password=$P$@789#")
-                                               .UseCDC()
+            IReplicator replicator = new Setup(@"Data Source=10.10.100.68\SQL2016;Initial Catalog=learns;User ID=spsauser;Password=$P$@789#")
                                                .TrackSchemaChanges()
                                                .EnablePartition()
                                                .SetInstanceName("xAudit")

@@ -8,6 +8,6 @@ xAudit is currently available for SQL Server 2016 or above. It is available as a
 
 # How it works?
 
-xAudit uses Change Data Capture or simply CDC as the back-end replicator implementation. This facility is natively available from SQL Server 2016. This is the reason why xAudit cannot be used along with any version before 2016. Even though we can use CDC for replication purposes, there are many other problems CDC cannot solve on it's own such as a change in the schema of source table. CDC is not able to automatically handle a data structure change by default. But xAudit can. xAudit will track any structural change in data and will recreate CDC instance for that table without losing already replicated data.
+xAudit uses Change Data Capture or simply CDC as the back-end replicator implementation. This facility is natively available from SQL Server 2016. This is the reason why xAudit cannot be used along with any version before 2016. Even though we can use CDC for replication purposes, there are many other problems CDC cannot solve on it's own such as a change of schema in source table. CDC is not able to automatically handle a data structure change by default. But xAudit can. xAudit will track any structural change in data and will recreate CDC instance for that table without losing already replicated data.
 
 > CDC is just one of the planned implementations of xAudit's replication mechanism. In a later point more techniques will be added so that more databases can be supported

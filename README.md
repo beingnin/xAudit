@@ -6,3 +6,7 @@ The biggest advantage of using xAudit is that it always has an eye on the table 
 
 xAudit is currently avalibale for SQL Server 2016 or above. It is available as a nuget package and can be integrated with any app types(console, web & desktop) in both .net framework and .net core projects
 
+# ⚡️ xAudit - How?
+
+xAudit uses Change Data Capturem or simply CDC as the backend replicator's implementation. This facility is natively available from SQL Server 2016. This is the reason why xAudit cannot be used along qith any version before 2016. Eventhough we can use CDC for replication purposes, there are many other problems CDC cannot solve on it's own such as a change in the schema of source table. CDC is not able to automatically handle a data structure change by default. But xAudit can. xAudit will track any structural change in data and will reacreate CDC instance for that table without losing already replicated data.
+

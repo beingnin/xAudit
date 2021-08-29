@@ -1,4 +1,4 @@
-# xAudit  - automatic audit system
+# xAudit  - automatic audit manager
 
 xAudit is the easiest way to automatically track data changes in RDBMS database for audit purposes. All you need to do is to tell xAudit which all tables you need to monitor for changes. The xAudit system will give you a replicator object in which you can start listening for DML changes on configured tables.
 

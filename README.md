@@ -13,11 +13,11 @@ xAudit uses Change Data Capture or simply CDC as the back-end replicator imple
 > CDC is just one of the planned implementations of xAudit's replication mechanism. In a later point more techniques will be added so that more databases can be supported
 
 # ⚙️Install
-### Using Package Manager Console(Visual Studio)
+#### Using Package Manager Console(Visual Studio)
 ```
 Install-Package Beingnin.xAudit
 ```
-### Using Dotnet CLI
+#### Using Dotnet CLI
 ```
 dotnet add package Beingnin.xAudit
 ```

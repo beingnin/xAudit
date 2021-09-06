@@ -31,7 +31,9 @@ namespace xAudit.CDC
             //cannot use transaction since alter table commands are used multiple times in this script
             string path = Path.Combine(Environment.CurrentDirectory, "Scripts", "meta.sql");
             StringBuilder query = new StringBuilder(File.ReadAllText(path, Encoding.UTF8));
-            query = query.Replace("xAudit", DbSchema).Replace("#DBNAME#", _sqlServerDriver.DbName).Replace("#DATAFILEPATH#", dataFileDirectory+ @"\xAudit_history_data_file.ndf");
+            query = query.Replace("xAudit", DbSchema)
+                         .Replace("#DBNAME#", _sqlServerDriver.DbName)
+                         .Replace("#DATAFILEPATH#",string.IsNullOrWhiteSpace(dataFileDirectory)?string.Empty: dataFileDirectory);
             await _sqlServerDriver.ExecuteTextAsync(query.ToString(),null);
 
         }

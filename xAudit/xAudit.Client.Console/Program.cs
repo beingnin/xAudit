@@ -15,17 +15,17 @@ namespace xAudit.Client.Console.FW
                 { 
                     "dbo",new string[]
                     {
-                        "customers",
+                        "groups",
                         "products"
                     }
                 },
-                {
-                    "sales",new string[]
-                    {
-                        "orders",
-                        "details"
-                    }
-                },
+                //{
+                //    "sales",new string[]
+                //    {
+                //        "orders",
+                //        "details"
+                //    }
+                //},
 
             };
 
@@ -33,7 +33,7 @@ namespace xAudit.Client.Console.FW
                                                .TrackSchemaChanges()
                                                .EnablePartition()
                                                .SetInstanceName("xAudit")
-                                               .Directory(@"C:\Program Files\Microsoft SQL Server\MSSQL13.SQL2016\MSSQL\DATA\")
+                                               .Directory(@"C:\Users\Public")
                                                .Tables(tables)
                                                .GetReplicator();
             try

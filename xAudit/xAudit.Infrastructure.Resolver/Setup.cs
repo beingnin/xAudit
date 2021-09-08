@@ -14,7 +14,7 @@ namespace xAudit
         private string _instance = null;
         private string _directory = null;
         private string _partitionConnection = null;
-        private bool _trackSchemaChanges = false;
+        private bool _trackSchemaChanges = true;
         private bool _enablePartition = true;
         private bool _keepVersionsForPartitions = false;
         private AuditTableCollection _tables = null;
@@ -41,15 +41,14 @@ namespace xAudit
             return this;
         }
 
-        public Setup TrackSchemaChanges()
+        public Setup DoNotTrackSchemaChanges()
         {
-            _trackSchemaChanges = true;
+            _trackSchemaChanges = false;
             return this;
         }
-        public Setup EnablePartition(bool keepVersions = false)
+        public Setup DisablePartition()
         {
-            _enablePartition = true;
-            _keepVersionsForPartitions = keepVersions;
+            _enablePartition = false;
             return this;
         }
         public Setup Tables(AuditTableCollection tables)

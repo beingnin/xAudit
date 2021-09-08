@@ -38,6 +38,11 @@ namespace xAudit.CDC
 
         }
 
+        public  Task CheckInstance()
+        {
+            throw new Exception("Schema already exisits. Please uninstall the current instance before proceeding");
+        }
+
         public async Task UpgradeAsync(string DbSchema, CDCReplicatorOptions option)
         {
             Console.WriteLine("Installing version " + _currentVersion + "...");

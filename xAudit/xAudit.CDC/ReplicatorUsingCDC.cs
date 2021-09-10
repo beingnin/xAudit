@@ -112,14 +112,13 @@ namespace xAudit.CDC
             if (ds == null)
                 return option.Tables;
 
-            HashSet<string> changedTables = null;
-            HashSet<string> activeTables = null;
+            HashSet<string> changedTables = new HashSet<string>();
+            HashSet<string> activeTables = new HashSet<string>();
             HashSet<string> inputTables = AuditTableCollectionHelper.ToHashSet(option.Tables);
             if (option.TrackSchemaChanges)
             {
                 if (ds.Tables[0] != null)
                 {
-                    changedTables = new HashSet<string>();
                     Console.WriteLine("\nThe following tables have changed since the last run");
                     Console.WriteLine("---------------------------------------------------------");
                     foreach (DataRow row in ds.Tables[0].Rows)
@@ -133,7 +132,6 @@ namespace xAudit.CDC
             }
             if (ds.Tables[1] != null)
             {
-                activeTables = new HashSet<string>();
                 foreach (DataRow row in ds.Tables[1].Rows)
                 {
                     var ins = Convert.ToString(row["CAPTURE_INSTANCE"]).SplitInstance();

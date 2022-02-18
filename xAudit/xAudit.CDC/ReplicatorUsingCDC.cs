@@ -19,7 +19,7 @@ namespace xAudit.CDC
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public Version CurrentVersion => "2.2.22";
+        public Version CurrentVersion => "2.2.24";
         private ReplicatorUsingCDC()
         {
         }
@@ -115,19 +115,24 @@ namespace xAudit.CDC
             HashSet<string> changedTables = new HashSet<string>();
             HashSet<string> activeTables = new HashSet<string>();
             HashSet<string> inputTables = AuditTableCollectionHelper.ToHashSet(option.Tables);
-            if (option.TrackSchemaChanges)
+            if (ds.Tables[0] != null)
             {
-                if (ds.Tables[0] != null)
+                Console.WriteLine("\nThe following tables have changed since the last run");
+                Console.WriteLine("---------------------------------------------------------");
+                foreach (DataRow row in ds.Tables[0].Rows)
                 {
-                    Console.WriteLine("\nThe following tables have changed since the last run");
-                    Console.WriteLine("---------------------------------------------------------");
-                    foreach (DataRow row in ds.Tables[0].Rows)
+                    var ins = Convert.ToString(row["CAPTURE_INSTANCE"]).SplitInstance();
+                    var tableName = ins.Item1 + "." + ins.Item2;
+                    if (option.TrackSchemaChanges)
                     {
-                        var ins = Convert.ToString(row["CAPTURE_INSTANCE"]).SplitInstance();
-                        var tableName = ins.Item1 + "." + ins.Item2;
                         changedTables.Add(tableName);
-                        log(tableName, Convert.ToString(row["COLUMN_NAME"]), Convert.ToChar(row["CHANGE"]));
                     }
+                    log(tableName, Convert.ToString(row["COLUMN_NAME"]), Convert.ToChar(row["CHANGE"]));
+                }
+
+                if (!option.TrackSchemaChanges)
+                {
+                    Console.WriteLine("Warning! Tracking schema changes are disabled for this run");
                 }
             }
             if (ds.Tables[1] != null)
@@ -230,7 +235,7 @@ namespace xAudit.CDC
         }
         private async Task<int> Reenable(HashSet<string> tables, string instance)
         {
-            if (tables == null || tables.Count==0)
+            if (tables == null || tables.Count == 0)
                 return 0;
 
             if (this._options.TrackSchemaChanges && this._options.EnablePartition)

@@ -24,7 +24,7 @@ namespace xAudit.Clients.Console.Core
                             //.DoNotTrackSchemaChanges()
                             //.DisablePartition()
                             .Directory(@"C:\Users\Public")
-                            .SetInstanceName("history")
+                            //.SetInstanceName("history")
                             .Tables(tables)
                             .GetReplicator();
             try

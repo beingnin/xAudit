@@ -19,7 +19,7 @@ namespace xAudit.CDC
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public Version CurrentVersion => "2.2.25";
+        public Version CurrentVersion => "2.2.27";
         private ReplicatorUsingCDC()
         {
         }
@@ -115,7 +115,7 @@ namespace xAudit.CDC
             HashSet<string> changedTables = new HashSet<string>();
             HashSet<string> activeTables = new HashSet<string>();
             HashSet<string> inputTables = AuditTableCollectionHelper.ToHashSet(option.Tables);
-            if (ds.Tables[0] != null)
+            if (ds.Tables[0] != null && ds.Tables[0].Rows.Count> 0)
             {
                 Console.WriteLine("\nThe following tables have changed since the last run");
                 Console.WriteLine("---------------------------------------------------------");
@@ -146,9 +146,9 @@ namespace xAudit.CDC
             }
 
             this.SegregateTables(inputTables, activeTables, changedTables, out HashSet<string> recreate, out HashSet<string> disable, out HashSet<string> enable);
-            await this.Enable(enable, option.InstanceName);
+            await this.Enable(enable, option.InstanceName,option.ForceMerge);
             await this.Disable(disable, option.InstanceName);
-            await this.Reenable(recreate, option.InstanceName);
+            await this.Reenable(recreate, option.InstanceName,option.ForceMerge);
 
             return option.Tables;
 
@@ -197,7 +197,7 @@ namespace xAudit.CDC
             enable.ExceptWith(activeTables);
         }
 
-        private async Task<int> Enable(HashSet<string> tables, string instance)
+        private async Task<int> Enable(HashSet<string> tables, string instance, bool forceMerge )
         {
             if (tables == null)
                 return 0;
@@ -221,7 +221,8 @@ namespace xAudit.CDC
             IDbDataParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@tables",dt),
-                new SqlParameter("@instancePrefix",instance)
+                new SqlParameter("@instancePrefix",instance),
+                new SqlParameter("@FORCEMERGE",forceMerge)
             };
             using (var transaction = new TransactionScope(TransactionScopeOption.Required,
                                                      new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted },
@@ -233,7 +234,7 @@ namespace xAudit.CDC
             }
 
         }
-        private async Task<int> Reenable(HashSet<string> tables, string instance)
+        private async Task<int> Reenable(HashSet<string> tables, string instance, bool forceMerge)
         {
             if (tables == null || tables.Count == 0)
                 return 0;
@@ -257,7 +258,8 @@ namespace xAudit.CDC
             IDbDataParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@tables",dt),
-                new SqlParameter("@instancePrefix",instance)
+                new SqlParameter("@instancePrefix",instance),
+                new SqlParameter("@FORCEMERGE",forceMerge)
             };
             using (var transaction = new TransactionScope(TransactionScopeOption.Required,
                                                     new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted },

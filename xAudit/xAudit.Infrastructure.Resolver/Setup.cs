@@ -15,16 +15,14 @@ namespace xAudit
         private string _directory = null;
         private string _partitionConnection = null;
         private bool _trackSchemaChanges = true;
+        private bool _forceMerge = false;
         private bool _enablePartition = true;
         private bool _keepVersionsForPartitions = false;
         private AuditTableCollection _tables = null;
-        public Setup(string sourceConnection, string partitionConnection = null)
+        public Setup(string sourceConnection)
         {
             _sourceConnection = sourceConnection;
-            if (string.IsNullOrWhiteSpace(partitionConnection))
-                _partitionConnection = sourceConnection;
-            else
-                _partitionConnection = partitionConnection;
+            _partitionConnection = sourceConnection;
         }
         /// <summary>
         /// Calling this method will set the internal implementation dependency to capture change data 
@@ -49,6 +47,11 @@ namespace xAudit
         public Setup DisablePartition()
         {
             _enablePartition = false;
+            return this;
+        }
+        public Setup AllowDataLoss()
+        {
+            _forceMerge = true;
             return this;
         }
         public Setup Tables(AuditTableCollection tables)
@@ -78,7 +81,8 @@ namespace xAudit
                             EnablePartition = _enablePartition,
                             KeepVersionsForPartition = _keepVersionsForPartitions,
                             InstanceName = _instance,
-                            DataDirectory=_directory,
+                            DataDirectory = _directory,
+                            ForceMerge = _forceMerge,
                             Tables = _tables
                         }
                         , _sourceConnection

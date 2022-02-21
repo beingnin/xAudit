@@ -15,6 +15,7 @@ namespace xAudit.Clients.Console.Core
                     "dbo",new string[]
                     {
                         "groups",
+                        "products"
                     }
                 },
             };
@@ -24,6 +25,7 @@ namespace xAudit.Clients.Console.Core
                             //.DisablePartition()
                             .Directory(@"C:\Users\Public")
                             //.SetInstanceName("history")
+                            .AllowDataLoss()
                             .Tables(tables)
                             .GetReplicator();
             try

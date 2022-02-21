@@ -35,8 +35,9 @@ namespace xAudit.Clients.Console.Core
             }
             catch (Exception ex)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
-                throw;
+                Console.WriteLine(ex.StackTrace);
             }
             Console.ReadKey();
         }

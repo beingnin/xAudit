@@ -238,12 +238,6 @@ namespace xAudit.CDC
             if (tables == null || tables.Count == 0)
                 return 0;
 
-            if (this._options.TrackSchemaChanges && this._options.EnablePartition)
-            {
-                IArchiver archiver = new ArchiverWithCDC(this._sqlServerDriver);
-                var archiveFailedList = await archiver.Archive(tables, instance);
-            }
-
             var dt = new DataTable();
 
             DataColumn sl = new DataColumn("sl", typeof(int));

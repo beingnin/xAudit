@@ -15,7 +15,6 @@ namespace xAudit.Clients.Console.Core
                     "dbo",new string[]
                     {
                         "groups",
-                        "products"
                     }
                 },
             };

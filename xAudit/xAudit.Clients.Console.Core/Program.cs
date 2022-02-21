@@ -9,16 +9,29 @@ namespace xAudit.Clients.Console.Core
     {
         static async Task Main(string[] args)
         {
-            IReplicator replicator = new Setup(
-               @"Data Source=10.10.100.68\SQL2016;Initial Catalog=SharjahPolice_Live_Beta_New;User ID=spsauser;Password=$P$@789#",
-               @"Data Source=10.10.100.68\SQL2016;Initial Catalog=SharjahPolice_Live_Beta_New;User ID=spsauser;Password=$P$@789#")
+            var tables = new AuditTableCollection()
+            {
+                {
+                    "dbo",new string[]
+                    {
+                        "groups",
+                        "products"
+                    }
+                },
+            };
+            IReplicator replicator = new Setup(@"Data Source=10.10.100.68\SQL2016;Initial Catalog=learns;User ID=spsauser;Password=$P$@789#")
                             .UseCDC()
-                            .DoNotTrackSchemaChanges()
+                            //.DoNotTrackSchemaChanges()
+                            //.DisablePartition()
+                            .Directory(@"C:\Users\Public")
+                            .SetInstanceName("history")
+                            .Tables(tables)
                             .GetReplicator();
             try
             {
 
                 await replicator.StartAsync();
+                Console.WriteLine("Completed run");
             }
             catch (Exception ex)
             {

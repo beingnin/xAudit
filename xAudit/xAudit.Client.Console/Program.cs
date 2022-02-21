@@ -30,8 +30,8 @@ namespace xAudit.Client.Console.FW
             };
 
             IReplicator replicator = new Setup(@"Data Source=10.10.100.68\SQL2016;Initial Catalog=learns;User ID=spsauser;Password=$P$@789#")
-                                               .DoNotTrackSchemaChanges()
-                                               .DisablePartition()
+                                               //.DoNotTrackSchemaChanges()
+                                               //.DisablePartition()
                                                .SetInstanceName("xAudit")
                                                .Directory(@"C:\Users\Public")
                                                .Tables(tables)

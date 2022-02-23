@@ -22,7 +22,7 @@ namespace xAudit.CDC
             _currentVersion = version;
             _sqlServerDriver = sqlServerDriver;
         }
-        public async Task InstallAsync(string DbSchema,string dataFileDirectory)
+        public async Task InstallAsync(string DbSchema, string dataFileDirectory)
         {
             Console.WriteLine("Fresh installation started...");
             Console.WriteLine("Checking for sql server agent...");
@@ -33,14 +33,24 @@ namespace xAudit.CDC
             StringBuilder query = new StringBuilder(File.ReadAllText(path, Encoding.UTF8));
             query = query.Replace("xAudit", DbSchema)
                          .Replace("#DBNAME#", _sqlServerDriver.DbName)
-                         .Replace("#DATAFILEPATH#",string.IsNullOrWhiteSpace(dataFileDirectory)?string.Empty: dataFileDirectory);
-            await _sqlServerDriver.ExecuteTextAsync(query.ToString(),null);
+                         .Replace("#DATAFILEPATH#", string.IsNullOrWhiteSpace(dataFileDirectory) ? string.Empty : dataFileDirectory);
+            await _sqlServerDriver.ExecuteTextAsync(query.ToString(), null);
 
         }
 
-        public  Task CheckInstance()
+        public async Task CheckInstance(string DbSchema)
         {
-            throw new Exception("Schema already exisits. Please uninstall the current instance before proceeding");
+            DbParameter[] dbParameter = new SqlParameter[]
+            {
+                new SqlParameter("@INSTANCENAME",DbSchema)
+            };
+            string query = @"IF EXISTS ( SELECT 1 FROM sys.schemas WHERE name = @INSTANCENAME )
+                                return 1 ELSE return 0";
+            var ifExists = await _sqlServerDriver.ExecuteNonQueryAsync(query, dbParameter);
+            if (ifExists > 0)
+            {
+                throw new Exception("Schema already exisits. Please uninstall the current instance before proceeding");
+            }
         }
 
         public async Task UpgradeAsync(string DbSchema, CDCReplicatorOptions option)

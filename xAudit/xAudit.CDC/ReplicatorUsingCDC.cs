@@ -108,26 +108,27 @@ namespace xAudit.CDC
         /// <returns>Return the list of tables which got failed to be enabled for cdc</returns>
         private async Task<AuditTableCollection> CheckAndApplyOnTables(string dbSchemaName, CDCReplicatorOptions option)
         {
-            var ds = await _sqlServerDriver.GetDataSetAsync(dbSchemaName + ".GET_TRACKED_TABLES", null);
+            var ds = await _sqlServerDriver.GetDataSetAsync(dbSchemaName + ".GET_TRACKED_TABLES@2", null);
             if (ds == null)
                 return option.Tables;
 
             HashSet<string> changedTables = new HashSet<string>();
             HashSet<string> activeTables = new HashSet<string>();
             HashSet<string> inputTables = AuditTableCollectionHelper.ToHashSet(option.Tables);
-            if (ds.Tables[0] != null && ds.Tables[0].Rows.Count> 0)
+            if (ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
             {
-                Console.WriteLine("\nThe following tables have changed since the last run");
+                Console.WriteLine("\nThe following active tables have changed since the last run");
                 Console.WriteLine("---------------------------------------------------------");
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
-                    var ins = Convert.ToString(row["CAPTURE_INSTANCE"]).SplitInstance();
-                    var tableName = ins.Item1 + "." + ins.Item2;
+                    var schema = Convert.ToString(row["SCHEMA"]);
+                    var table = Convert.ToString(row["TABLE"]);
+                    var tableName = schema + "." + table;
                     if (option.TrackSchemaChanges)
                     {
                         changedTables.Add(tableName);
                     }
-                    log(tableName, Convert.ToString(row["COLUMN_NAME"]), Convert.ToChar(row["CHANGE"]));
+                    log(tableName, Convert.ToString(row["COLUMN"]), Convert.ToString(row["CHANGE"]));
                 }
 
                 if (!option.TrackSchemaChanges)
@@ -139,24 +140,36 @@ namespace xAudit.CDC
             {
                 foreach (DataRow row in ds.Tables[1].Rows)
                 {
-                    var ins = Convert.ToString(row["CAPTURE_INSTANCE"]).SplitInstance();
-                    var tableName = ins.Item1 + "." + ins.Item2;
+                    var schema = Convert.ToString(row["SOURCE_SCHEMA"]);
+                    var table = Convert.ToString(row["SOURCE_TABLE"]);
+                    var tableName = schema + "." + table;
                     activeTables.Add(tableName);
                 }
             }
 
             this.SegregateTables(inputTables, activeTables, changedTables, out HashSet<string> recreate, out HashSet<string> disable, out HashSet<string> enable);
-            await this.Enable(enable, option.InstanceName,option.ForceMerge);
+            await this.Enable(enable, option.InstanceName, option.ForceMerge);
             await this.Disable(disable, option.InstanceName);
-            await this.Reenable(recreate, option.InstanceName,option.ForceMerge);
+            await this.Reenable(recreate, option.InstanceName, option.ForceMerge);
 
             return option.Tables;
 
             //local functions
 
-            void log(string instance, string column, char change)
+            void log(string instance, string column, string change)
             {
-                Console.ForegroundColor = change == '-' ? ConsoleColor.Red : ConsoleColor.Green;
+                switch (change)
+                {
+                    case "-":
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        break;
+                    case "+":
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        break;
+                    default:
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        break;
+                };
                 Console.Write($"[{change}]");
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine($"{instance}--> {column}");
@@ -197,7 +210,7 @@ namespace xAudit.CDC
             enable.ExceptWith(activeTables);
         }
 
-        private async Task<int> Enable(HashSet<string> tables, string instance, bool forceMerge )
+        private async Task<int> Enable(HashSet<string> tables, string instance, bool forceMerge)
         {
             if (tables == null)
                 return 0;

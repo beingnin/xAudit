@@ -19,7 +19,7 @@ namespace xAudit.CDC
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public Version CurrentVersion => "2.2.27";
+        public Version CurrentVersion => "2.2.32";
         private ReplicatorUsingCDC()
         {
         }
@@ -68,7 +68,7 @@ namespace xAudit.CDC
             }
 
             await this.EnableOndB(this._options.InstanceName);
-            var failedList = await this.CheckAndApplyOnTables(this._options.InstanceName, _options);
+            _ = await this.CheckAndApplyOnTables(this._options.InstanceName, _options);
         }
 
         public void Stop(bool backupBeforeDisabling = true, bool cleanSource = true)
@@ -301,6 +301,7 @@ namespace xAudit.CDC
                                                     TransactionScopeAsyncFlowOption.Enabled))
             {
                 var result = await _sqlServerDriver.ExecuteNonQueryAsync(instance + ".DISABLE_TABLES", parameters);
+                transaction.Complete();
                 return result;
             }
         }

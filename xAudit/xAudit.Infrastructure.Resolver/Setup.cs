@@ -16,8 +16,6 @@ namespace xAudit
         private string _partitionConnection = null;
         private bool _trackSchemaChanges = true;
         private bool _forceMerge = false;
-        private bool _enablePartition = true;
-        private bool _keepVersionsForPartitions = false;
         private AuditTableCollection _tables = null;
         public Setup(string sourceConnection)
         {
@@ -42,11 +40,6 @@ namespace xAudit
         public Setup DoNotTrackSchemaChanges()
         {
             _trackSchemaChanges = false;
-            return this;
-        }
-        public Setup DisablePartition()
-        {
-            _enablePartition = false;
             return this;
         }
         public Setup AllowDataLoss()
@@ -78,8 +71,6 @@ namespace xAudit
                         new CDCReplicatorOptions()
                         {
                             TrackSchemaChanges = _trackSchemaChanges,
-                            EnablePartition = _enablePartition,
-                            KeepVersionsForPartition = _keepVersionsForPartitions,
                             InstanceName = _instance,
                             DataDirectory = _directory,
                             ForceMerge = _forceMerge,

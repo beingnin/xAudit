@@ -59,8 +59,6 @@ BEGIN
 		[IsCurrentVersion] BIT DEFAULT 0,
 		[InstalledDateUTC] DATETIME NOT NULL,
 		[TrackSchemaChanges] BIT DEFAULT 0,
-		[EnablePartition] BIT DEFAULT 0,
-		[KeepVersionsForPartition] BIT DEFAULT 0
 	) ON [X_AUDIT_HISTORY_FG];
 END
 

@@ -50,7 +50,7 @@ namespace xAudit.CDC
         public async Task StartAsync()
         {
             var action = await WhatToDoNextAsync();
-            Console.WriteLine("status :" + action);
+            Console.WriteLine("Tool status : " + action);
             switch (action)
             {
                 case WhatNext.NoUpdate:

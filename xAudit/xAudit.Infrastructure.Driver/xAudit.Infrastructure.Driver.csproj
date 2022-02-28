@@ -10,7 +10,7 @@
     <Copyright>2021</Copyright>
     <PackageLicenseFile></PackageLicenseFile>
     <PackageReleaseNotes>This is the initial release</PackageReleaseNotes>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>

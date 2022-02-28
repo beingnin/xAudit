@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageId>Beingnin.xAudit</PackageId>
     <Authors>Beingnin, AKS</Authors>
@@ -12,7 +12,7 @@
     <PackageTags>Beingnin xAudit Replicator SQL CDC</PackageTags>
     <PackageReleaseNotes>This is the initial release</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.0.1</Version>
+    <Version>1.0.7 -preview</Version>
     <Company>Beingnin</Company>
   </PropertyGroup>
 

@@ -7,7 +7,7 @@
     <NeutralLanguage></NeutralLanguage>
     <Authors>Beingnin</Authors>
     <PackageId>Beingnin.xAudit.CDC</PackageId>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Company>Beingnin</Company>
     <Product>Beingnin.xAudit.CDC</Product>

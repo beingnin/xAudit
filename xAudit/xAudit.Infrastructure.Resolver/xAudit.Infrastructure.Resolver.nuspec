@@ -2,16 +2,16 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
 	<metadata>
 		<id>Beingnin.xAudit</id>
-		<version>1.0.9-preview</version>
-		<authors>Beingnin,AKS</authors>
+		<version>1.0.10-preview</version>
+		<authors>Beingnin, AkshayaSakthivel</authors>
 		<requireLicenseAcceptance>true</requireLicenseAcceptance>
 		<license type="expression">MIT</license>
 		<licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
 		<description>Configurable tool to automate audit logging for SQL server databases- with special handling of schema changes</description>
 		<releaseNotes>This is the initial release</releaseNotes>
-		<copyright>2021</copyright>
+		<copyright>2022</copyright>
 		<tags>CDC, Sql Server, Audit, History, Replication</tags>
-		<iconUrl>https://raw.githubusercontent.com/beingnin/xAudit/main/xAudit/xAudit.Infrastructure.Resolver/cloning.png</iconUrl>
+		<icon>\cloning.png</icon>
 		<projectUrl>https://github.com/beingnin/xAudit</projectUrl>
 		<dependencies>
 			<group targetFramework=".NETStandard2.0">
@@ -25,5 +25,6 @@
 		<file src="D:\Sources\OS\xAudit\xAudit\xAudit.Primitives\bin\Debug\netstandard2.0\xAudit.Primitives.dll" target="lib\netstandard2.0\xAudit.Primitives.dll" />
 		<file src="D:\Sources\OS\xAudit\xAudit\xAudit.Infrastructure.Driver\bin\Debug\netstandard2.0\xAudit.Infrastructure.Driver.dll" target="lib\netstandard2.0\xAudit.Infrastructure.Driver.dll" />
 		<file src="D:\Sources\OS\xAudit\xAudit\xAudit.Infrastructure.Resolver\bin\Debug\netstandard2.0\xAudit.Infrastructure.Resolver.dll" target="lib\netstandard2.0\xAudit.Infrastructure.Resolver.dll" />
+		<file src="cloning.png" target="\" />
 	</files>
 </package>

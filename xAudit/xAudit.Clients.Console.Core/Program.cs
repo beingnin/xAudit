@@ -20,7 +20,7 @@ namespace xAudit.Clients.Console.Core
             };
             IReplicator replicator = new Setup(@"Data Source=10.10.100.68\SQL2016;Initial Catalog=learns;User ID=spsauser;Password=$P$@789#")
                             .UseCDC()
-                            //.DoNotTrackSchemaChanges()
+                            .DoNotTrackSchemaChanges()
                             .Directory(@"C:\Users\Public")
                             .AllowDataLoss()
                             .Tables(tables)

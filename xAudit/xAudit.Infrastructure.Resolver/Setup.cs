@@ -23,7 +23,7 @@ namespace xAudit
             _partitionConnection = sourceConnection;
         }
         /// <summary>
-        /// Calling this method will set the internal implementation dependency to capture change data 
+        /// Calling this method will set the internal implementation dependency to change data capture
         /// </summary>
         /// <returns></returns>
         public Setup UseCDC()
@@ -41,7 +41,7 @@ namespace xAudit
             return this;
         }
         /// <summary>
-        /// Configure replicator in a way that it wouldn't mind the schema changes happened on tables. Will continue using the previous table structure only
+        /// Schema changes on tables will be ignored and will continue using the previous table structure for replication
         /// </summary>
         /// <returns></returns>
         public Setup DoNotTrackSchemaChanges()
@@ -50,7 +50,7 @@ namespace xAudit
             return this;
         }
         /// <summary>
-        /// Replicator will try to make adjustments to those fields which are not convertible to target data type when a data type change occurs in a column. Might result into data loss
+        /// Replicator will try to make changes to the target fields which are not convertible when a data type change occurs. Might result in data loss
         /// </summary>
         /// <returns></returns>
         public Setup AllowDataLoss()
@@ -69,7 +69,7 @@ namespace xAudit
             return this;
         }
         /// <summary>
-        /// Instance name of this replicator. This will also be the name of the database schema where xAudit creats for it's db operations. Use this to change it if you are alreading using the default instance name in the db 
+        /// Instance name of the replicator. This will be the name of the database schema where xAudit uses for it's db operations
         /// </summary>
         /// <param name="instance">Default is xAudit</param>
         /// <returns></returns>
@@ -79,7 +79,7 @@ namespace xAudit
             return this;
         }
         /// <summary>
-        /// Folder path where all replicated data(.mdf) will be kept if it is other than the PRIMARY file group location. This can be a location in the same disk drive or a new one or even in a separate machine in the same network. Set it wisely according to your environment structure and requirements. Reccommendation is to use a separate disk drive in the same machine considering benchmarks done wrt perfomance and latency
+        /// Folder path where all replicated data(.mdf) will be kept apart from the default PRIMARY file group location. This can be located in the same disk drive, a new one or in a separate machine in the same network. Reccommendation: Use separate disk drive in the same machine considering benchmarks done wrt perfomance and latency
         /// </summary>
         /// <param name="directoryPath">setting null will force the tool to use the same location of PRIMARY file group</param>
         /// <returns></returns>

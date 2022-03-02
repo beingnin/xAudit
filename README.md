@@ -1,4 +1,4 @@
-# xAudit  - audit manager
+# xAudit  - audit manager ![Nuget](https://img.shields.io/nuget/dt/Beingnin.xAudit) ![GitHub](https://img.shields.io/github/license/beingnin/xaudit)  ![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/Beingnin.xAudit)
 
 xAudit is the easiest way to automatically track data changes in relational databases for audit purposes. All you need to do is to tell xAudit which all tables you need to monitor for changes. The xAudit system will give you a replicator object in which you can start listening for DML changes on configured tables. xAudit will keep the changes in separate tables and archives, where you can run your queries in later point for audit scrutinizations 
 

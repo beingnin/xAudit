@@ -55,7 +55,7 @@ namespace xAudit.CDC
             {
                 Version previousVersion = _currentVersion.FindImmediatePrevious(Directory.GetFiles(versionScriptPath).Select(x => (Version)Path.GetFileNameWithoutExtension(x)).ToArray());
                 versionScriptPath = versionScriptPath + "\\" + previousVersion + ".sql";
-                Console.WriteLine("script  not found for current version. Instead executing previous version " + previousVersion);
+                Console.WriteLine("script  not found for current version. Instead executing script from previous version " + previousVersion);
             }
 
 

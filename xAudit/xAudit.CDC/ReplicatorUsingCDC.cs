@@ -19,7 +19,7 @@ namespace xAudit.CDC
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public Version CurrentVersion => "2.2.32";
+        public Version CurrentVersion => "1.0.10";
         private ReplicatorUsingCDC()
         {
         }
@@ -212,7 +212,7 @@ namespace xAudit.CDC
 
         private async Task<int> Enable(HashSet<string> tables, string instance, bool forceMerge)
         {
-            if (tables == null)
+            if (tables == null || tables.Count ==0)
                 return 0;
 
             var dt = new DataTable();
@@ -237,6 +237,12 @@ namespace xAudit.CDC
                 new SqlParameter("@instancePrefix",instance),
                 new SqlParameter("@FORCEMERGE",forceMerge)
             };
+            Console.WriteLine("\nThe following tables have been added to the audit collection since the last run");
+            foreach (var t in tables)
+            {
+                Console.WriteLine(t);
+            }
+
             using (var transaction = new TransactionScope(TransactionScopeOption.Required,
                                                      new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted },
                                                      TransactionScopeAsyncFlowOption.Enabled))
@@ -285,7 +291,7 @@ namespace xAudit.CDC
         }
         private async Task<int> Disable(HashSet<string> tables, string instance)
         {
-            if (tables == null)
+            if (tables == null || tables.Count == 0)
                 return 0;
 
             var dt = new DataTable();
@@ -309,6 +315,11 @@ namespace xAudit.CDC
                 new SqlParameter("@tables",dt),
                 new SqlParameter("@instancePrefix",instance)
             };
+            Console.WriteLine("\nThe following tables have been removed from the audit collection since the last run");
+            foreach (var t in tables)
+            {
+                Console.WriteLine(t);
+            }
             using (var transaction = new TransactionScope(TransactionScopeOption.Required,
                                                     new TransactionOptions() { IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted },
                                                     TransactionScopeAsyncFlowOption.Enabled))

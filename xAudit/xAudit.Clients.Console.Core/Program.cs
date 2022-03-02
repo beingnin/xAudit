@@ -14,7 +14,6 @@ namespace xAudit.Clients.Console.Core
                 {
                     "dbo",new string[]
                     {
-                        "groups",
                         "products"
                     }
                 },
@@ -22,9 +21,7 @@ namespace xAudit.Clients.Console.Core
             IReplicator replicator = new Setup(@"Data Source=10.10.100.68\SQL2016;Initial Catalog=learns;User ID=spsauser;Password=$P$@789#")
                             .UseCDC()
                             //.DoNotTrackSchemaChanges()
-                            //.DisablePartition()
                             .Directory(@"C:\Users\Public")
-                            //.SetInstanceName("history")
                             .AllowDataLoss()
                             .Tables(tables)
                             .GetReplicator();

@@ -86,19 +86,19 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="xAudit.CDC, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Beingnin.xAudit.1.0.8-preview\lib\netstandard2.0\xAudit.CDC.dll</HintPath>
+      <HintPath>..\packages\Beingnin.xAudit.1.0.17-preview\lib\netstandard2.0\xAudit.CDC.dll</HintPath>
     </Reference>
     <Reference Include="xAudit.Contracts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Beingnin.xAudit.1.0.8-preview\lib\netstandard2.0\xAudit.Contracts.dll</HintPath>
+      <HintPath>..\packages\Beingnin.xAudit.1.0.17-preview\lib\netstandard2.0\xAudit.Contracts.dll</HintPath>
     </Reference>
     <Reference Include="xAudit.Infrastructure.Driver, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Beingnin.xAudit.1.0.8-preview\lib\netstandard2.0\xAudit.Infrastructure.Driver.dll</HintPath>
+      <HintPath>..\packages\Beingnin.xAudit.1.0.17-preview\lib\netstandard2.0\xAudit.Infrastructure.Driver.dll</HintPath>
     </Reference>
     <Reference Include="xAudit.Infrastructure.Resolver, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Beingnin.xAudit.1.0.8-preview\lib\netstandard2.0\xAudit.Infrastructure.Resolver.dll</HintPath>
+      <HintPath>..\packages\Beingnin.xAudit.1.0.17-preview\lib\netstandard2.0\xAudit.Infrastructure.Resolver.dll</HintPath>
     </Reference>
     <Reference Include="xAudit.Primitives, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Beingnin.xAudit.1.0.8-preview\lib\netstandard2.0\xAudit.Primitives.dll</HintPath>
+      <HintPath>..\packages\Beingnin.xAudit.1.0.17-preview\lib\netstandard2.0\xAudit.Primitives.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

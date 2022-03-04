@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 <Target Name="AfterBuild">
 	<Copy SourceFiles="$(OutputPath)yourfiles" DestinationFolder="$(YourVariable)" ContinueOnError="true" />
 </Target>
@@ -17,23 +17,27 @@
     <PackageReleaseNotes>This is the initial release</PackageReleaseNotes>
     <Version>1.0.1</Version>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Scripts\cleanup.sql" />
+    <None Remove="Scripts\meta.sql" />
+    <None Remove="Scripts\Versions\1.0.0.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\cleanup.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\meta.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\Versions\1.0.0.sql">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\xAudit.Contracts\xAudit.Contracts.csproj" />
     <ProjectReference Include="..\xAudit.Infrastructure.Driver\xAudit.Infrastructure.Driver.csproj" />
     <ProjectReference Include="..\xAudit.Primitives\xAudit.Primitives.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Scripts\cleanup.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\meta.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\Versions\1.0.0.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

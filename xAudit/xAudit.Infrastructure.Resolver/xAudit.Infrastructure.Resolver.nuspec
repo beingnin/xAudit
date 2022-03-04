@@ -2,8 +2,8 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
 	<metadata>
 		<id>Beingnin.xAudit</id>
-		<version>1.0.10-preview</version>
-		<authors>Beingnin, AkshayaSakthivel</authors>
+		<version>1.0.17-preview</version>
+		<authors>AkshayaSakthivel,Beingnin</authors>
 		<requireLicenseAcceptance>true</requireLicenseAcceptance>
 		<license type="expression">MIT</license>
 		<licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
@@ -20,11 +20,10 @@
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="D:\Sources\OS\xAudit\xAudit\xAudit.CDC\bin\Debug\netstandard2.0\xAudit.CDC.dll" target="lib\netstandard2.0\xAudit.CDC.dll" />
-		<file src="D:\Sources\OS\xAudit\xAudit\xAudit.Contracts\bin\Debug\netstandard2.0\xAudit.Contracts.dll" target="lib\netstandard2.0\xAudit.Contracts.dll" />
-		<file src="D:\Sources\OS\xAudit\xAudit\xAudit.Primitives\bin\Debug\netstandard2.0\xAudit.Primitives.dll" target="lib\netstandard2.0\xAudit.Primitives.dll" />
-		<file src="D:\Sources\OS\xAudit\xAudit\xAudit.Infrastructure.Driver\bin\Debug\netstandard2.0\xAudit.Infrastructure.Driver.dll" target="lib\netstandard2.0\xAudit.Infrastructure.Driver.dll" />
-		<file src="D:\Sources\OS\xAudit\xAudit\xAudit.Infrastructure.Resolver\bin\Debug\netstandard2.0\xAudit.Infrastructure.Resolver.dll" target="lib\netstandard2.0\xAudit.Infrastructure.Resolver.dll" />
+		<file src="..\xAudit.CDC\bin\Debug\netstandard2.0\xAudit.CDC.dll" target="lib\netstandard2.0\xAudit.CDC.dll" />
+		<file src="..\xAudit.Contracts\bin\Debug\netstandard2.0\xAudit.Contracts.dll" target="lib\netstandard2.0\xAudit.Contracts.dll" />
+		<file src="..\xAudit.Primitives\bin\Debug\netstandard2.0\xAudit.Primitives.dll" target="lib\netstandard2.0\xAudit.Primitives.dll" />
+		<file src="..\xAudit.Infrastructure.Driver\bin\Debug\netstandard2.0\xAudit.Infrastructure.Driver.dll" target="lib\netstandard2.0\xAudit.Infrastructure.Driver.dll" />
 		<file src="cloning.png" target="\" />
 	</files>
 </package>

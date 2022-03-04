@@ -79,7 +79,7 @@ namespace xAudit
             return this;
         }
         /// <summary>
-        /// Folder path where all replicated data(.mdf) will be kept apart from the default PRIMARY file group location. This can be located in the same disk drive, a new one or in a separate machine in the same network. Reccommendation: Use separate disk drive in the same machine considering benchmarks done wrt perfomance and latency
+        /// Folder path where all replicated data(.ndf) will be kept apart from the default PRIMARY file group location. This can be located in the same disk drive, a new one or in a separate machine in the same network. Reccommendation: Use separate disk drive in the same machine considering benchmarks done wrt perfomance and latency
         /// </summary>
         /// <param name="directoryPath">setting null will force the tool to use the same location of PRIMARY file group</param>
         /// <returns></returns>

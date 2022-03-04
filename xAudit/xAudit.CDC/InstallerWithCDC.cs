@@ -5,7 +5,9 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Transactions;
 using xAudit.CDC.Exceptions;
@@ -17,28 +19,35 @@ namespace xAudit.CDC
     {
         Version _currentVersion = default(Version);
         private SqlServerDriver _sqlServerDriver;
+        private Assembly _assembly = Assembly.GetExecutingAssembly();
         public InstallerWithCDC(Version version, SqlServerDriver sqlServerDriver)
         {
             _currentVersion = version;
             _sqlServerDriver = sqlServerDriver;
         }
-        public async Task InstallAsync(string DbSchema,string dataFileDirectory)
+        public async Task InstallAsync(string DbSchema, string dataFileDirectory)
         {
             Console.WriteLine("Fresh installation started...");
             Console.WriteLine("Checking for sql server agent...");
             await this.IsAgentRunning();
 
             //cannot use transaction since alter table commands are used multiple times in this script
-            string path = Path.Combine(Environment.CurrentDirectory, "Scripts", "meta.sql");
-            StringBuilder query = new StringBuilder(File.ReadAllText(path, Encoding.UTF8));
+            StringBuilder query = new StringBuilder();
+            using (Stream stream = _assembly.GetManifestResourceStream("xAudit.CDC.Scripts.meta.sql"))
+            {
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    query.Append(await reader.ReadToEndAsync());
+                }
+            }
             query = query.Replace("xAudit", DbSchema)
                          .Replace("#DBNAME#", _sqlServerDriver.DbName)
-                         .Replace("#DATAFILEPATH#",string.IsNullOrWhiteSpace(dataFileDirectory)?string.Empty: dataFileDirectory);
-            await _sqlServerDriver.ExecuteTextAsync(query.ToString(),null);
+                         .Replace("#DATAFILEPATH#", string.IsNullOrWhiteSpace(dataFileDirectory) ? string.Empty : dataFileDirectory);
+            await _sqlServerDriver.ExecuteTextAsync(query.ToString(), null);
 
         }
 
-        public  Task CheckInstance()
+        public Task CheckInstance()
         {
             throw new Exception("Schema already exisits. Please uninstall the current instance before proceeding");
         }
@@ -47,30 +56,48 @@ namespace xAudit.CDC
         {
             Console.WriteLine("Installing version " + _currentVersion + "...");
             await this.IsAgentRunning();
-            string versionScriptPath = Path.Combine(Environment.CurrentDirectory, "Scripts", "Versions");
-            var cleanupScriptPath = Path.Combine(Environment.CurrentDirectory, "Scripts", "cleanup.sql");
-            if (File.Exists(versionScriptPath + "\\" + _currentVersion + ".sql"))
-                versionScriptPath = versionScriptPath + "\\" + _currentVersion + ".sql";
-            else
+            string[] filenames = _assembly.GetManifestResourceNames();
+            string versionScriptPath = null;
+
+            if (filenames.Contains($"xAudit.CDC.Scripts.Versions.{_currentVersion}.sql"))
             {
-                Version previousVersion = _currentVersion.FindImmediatePrevious(Directory.GetFiles(versionScriptPath).Select(x => (Version)Path.GetFileNameWithoutExtension(x)).ToArray());
-                versionScriptPath = versionScriptPath + "\\" + previousVersion + ".sql";
+                versionScriptPath = $"xAudit.CDC.Scripts.Versions.{_currentVersion}.sql";
+            }
+            else
+
+            {
+                var regex = new Regex(@"\d+\.\d+\.\d+");
+                var allVersions = filenames.Where(x => x.StartsWith("xAudit.CDC.Scripts.Versions")).Select(x => (Version)regex.Match(x).Value).ToArray();
+                Version previousVersion = _currentVersion.FindImmediatePrevious(allVersions);
+                versionScriptPath = $"xAudit.CDC.Scripts.Versions.{previousVersion}.sql";
                 Console.WriteLine("script  not found for current version. Instead executing script from previous version " + previousVersion);
             }
-
 
             using (var transaction = new TransactionScope(TransactionScopeOption.Required,
                                                       new TransactionOptions() { IsolationLevel = IsolationLevel.ReadCommitted },
                                                       TransactionScopeAsyncFlowOption.Enabled))
             {
                 //execute cleanup query. Delete all SP, UDF etc belongs to current version
-                StringBuilder query = new StringBuilder(File.ReadAllText(cleanupScriptPath, Encoding.UTF8));
+                StringBuilder query = new StringBuilder();
+                using (Stream stream = _assembly.GetManifestResourceStream("xAudit.CDC.Scripts.cleanup.sql"))
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        query.Append(await reader.ReadToEndAsync());
+                    }
+                }
                 query = query.Replace("xAudit", DbSchema);
                 await _sqlServerDriver.ExecuteTextAsync(query.ToString(), null);
 
                 //execute current version scripts. Create all SP, UDF etc belongs to current version
                 query = query.Clear();
-                query = query.Append(File.ReadAllText(versionScriptPath, Encoding.UTF8)).Replace("xAudit", DbSchema);
+                using (Stream stream = _assembly.GetManifestResourceStream(versionScriptPath))
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        query.Append(await reader.ReadToEndAsync());
+                    }
+                }
                 await _sqlServerDriver.ExecuteScriptAsync(query.ToString());
 
                 await this.AddVersion(option, DbSchema);

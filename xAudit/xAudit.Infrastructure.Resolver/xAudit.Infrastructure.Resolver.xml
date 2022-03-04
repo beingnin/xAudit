@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>xAudit.Infrastructure.Resolver</name>
+    </assembly>
+    <members>
+        <member name="M:xAudit.Setup.UseCDC">
+            <summary>
+            Calling this method will set the internal implementation dependency to change data capture
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:xAudit.Setup.UseTriggers">
+            <summary>
+            Not yet implemented
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:xAudit.Setup.DoNotTrackSchemaChanges">
+            <summary>
+            Schema changes on tables will be ignored and will continue using the previous table structure for replication
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:xAudit.Setup.AllowDataLoss">
+            <summary>
+            Replicator will try to make changes to the target fields which are not convertible when a data type change occurs. Might result in data loss
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:xAudit.Setup.Tables(xAudit.AuditTableCollection)">
+            <summary>
+            Note: excluding a previously added table from this list will stop replicating data for that table
+            </summary>
+            <param name="tables">Pass the audit table collection which you need to replicate data</param>
+            <returns></returns>
+        </member>
+        <member name="M:xAudit.Setup.SetInstanceName(System.String)">
+            <summary>
+            Instance name of the replicator. This will be the name of the database schema where xAudit uses for it's db operations
+            </summary>
+            <param name="instance">Default is xAudit</param>
+            <returns></returns>
+        </member>
+        <member name="M:xAudit.Setup.Directory(System.String)">
+            <summary>
+            Folder path where all replicated data(.ndf) will be kept apart from the default PRIMARY file group location. This can be located in the same disk drive, a new one or in a separate machine in the same network. Reccommendation: Use separate disk drive in the same machine considering benchmarks done wrt perfomance and latency
+            </summary>
+            <param name="directoryPath">setting null will force the tool to use the same location of PRIMARY file group</param>
+            <returns></returns>
+        </member>
+        <member name="M:xAudit.Setup.GetReplicator">
+            <summary>
+            Build and return the replicator object in which you can start replications
+            </summary>
+            <returns>IReplicator object</returns>
+        </member>
+    </members>
+</doc>

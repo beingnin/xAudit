@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
 	<metadata>
 		<id>Beingnin.xAudit</id>
-		<version>1.0.17-preview</version>
+		<version>1.0.18-preview</version>
 		<authors>AkshayaSakthivel,Beingnin</authors>
 		<requireLicenseAcceptance>true</requireLicenseAcceptance>
 		<license type="expression">MIT</license>
@@ -25,5 +25,6 @@
 		<file src="..\xAudit.Primitives\bin\Debug\netstandard2.0\xAudit.Primitives.dll" target="lib\netstandard2.0\xAudit.Primitives.dll" />
 		<file src="..\xAudit.Infrastructure.Driver\bin\Debug\netstandard2.0\xAudit.Infrastructure.Driver.dll" target="lib\netstandard2.0\xAudit.Infrastructure.Driver.dll" />
 		<file src="cloning.png" target="\" />
+		<file src="xAudit.Infrastructure.Resolver.xml" target="lib\netstandard2.0\xAudit.Infrastructure.Resolver.xml" />
 	</files>
 </package>

@@ -16,6 +16,10 @@
     <Company>Beingnin</Company>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\Sources\OS\xAudit\xAudit\xAudit.Infrastructure.Resolver\xAudit.Infrastructure.Resolver.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\xAudit.CDC\xAudit.CDC.csproj" />
     <ProjectReference Include="..\xAudit.Contracts\xAudit.Contracts.csproj" />

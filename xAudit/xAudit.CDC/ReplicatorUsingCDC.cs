@@ -19,7 +19,7 @@ namespace xAudit.CDC
         private SqlServerDriver _sqlServerDriver = null;
         private static Lazy<ReplicatorUsingCDC> _instance = new Lazy<ReplicatorUsingCDC>(() => new ReplicatorUsingCDC());
         private CDCReplicatorOptions _options = null;
-        public Version CurrentVersion => "1.0.18";
+        public Version CurrentVersion => "1.0.19";
         private ReplicatorUsingCDC()
         {
         }

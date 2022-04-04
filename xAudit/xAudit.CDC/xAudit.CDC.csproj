@@ -22,8 +22,10 @@
     <None Remove="Scripts\meta.sql" />
     <None Remove="Scripts\Versions\1.0.0.sql" />
     <None Remove="Scripts\Versions\1.0.19.sql" />
+    <None Remove="Scripts\Versions\1.0.20.sql" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\Versions\1.0.20.sql" />
     <EmbeddedResource Include="Scripts\Versions\1.0.19.sql" />
   </ItemGroup>
   <ItemGroup>
